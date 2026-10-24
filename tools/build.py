@@ -10,6 +10,7 @@ css = (SRC / "style.css").read_text()
 js = "\n".join([
     (SRC / "data.js").read_text(),
     (SRC / "engine.js").read_text(),
+    (SRC / "enchant.js").read_text(),
     (SRC / "app.js").read_text(),
 ])
 

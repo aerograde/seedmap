@@ -3,6 +3,7 @@
   "use strict";
 
   const E = window.SeedMapEngine;
+  const ENCH = window.SeedMapEnchant;
   const XHTML = "http://www.w3.org/1999/xhtml";
   const SVGNS = "http://www.w3.org/2000/svg";
   const MIN_SCALE = 0.22;
@@ -685,6 +686,13 @@
     measure: { active: false, points: [] },
     dioramaTimer: 0,
     dioramaDirty: false,
+    enchantOpen: false,
+    enchantItem: "sword",
+    enchantMaterial: "diamond",
+    enchantShelves: 15,
+    enchantSlot: 2,
+    enchantTimer: 0,
+    enchantRaf: 0,
   };
 
   const tiles = new Map();
@@ -743,6 +751,20 @@
   let measureTotalEl = null;
   let measureTimeEl = null;
   let measureRouteEl = null;
+  let enchantEl = null;
+  let enchantBtn = null;
+  let enchantBack = null;
+  let enchantItemsEl = null;
+  let enchantMaterialsEl = null;
+  let enchantGearMetaEl = null;
+  let enchantShelfInput = null;
+  let enchantShelfCountEl = null;
+  let enchantShelfHint = null;
+  let enchantShelvesEl = null;
+  let enchantOffersEl = null;
+  let enchantOddsEl = null;
+  let enchantOddsTitleEl = null;
+  let enchantOddsLevelEl = null;
 
   /* ------------------------------------------------------------ dom utils */
 
@@ -1666,6 +1688,22 @@
     }
   }
 
+  // The top-down terrain is the one fully lit surface in an otherwise dark
+  // interface. A quiet veil over the tiles (drawn before the grid and the
+  // markers) settles it into the same palette without dimming any icon or
+  // label that sits on top.
+  function drawTerrainVeil() {
+    ctx.fillStyle = "rgba(13, 17, 15, 0.16)";
+    ctx.fillRect(0, 0, state.vw, state.vh);
+    const vignette = ctx.createRadialGradient(
+      state.vw / 2, state.vh / 2, Math.min(state.vw, state.vh) * 0.34,
+      state.vw / 2, state.vh / 2, Math.max(state.vw, state.vh) * 0.82);
+    vignette.addColorStop(0, "rgba(6, 9, 8, 0)");
+    vignette.addColorStop(1, "rgba(6, 9, 8, 0.26)");
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, state.vw, state.vh);
+  }
+
   // Human-readable coordinate intervals. The chosen step keeps labels at
   // least 100 px apart on desktop and 80 px on a phone at every zoom level.
   const GRID_STEPS = [
@@ -1948,26 +1986,26 @@
     if (y < 8) { y = my + R + 11; below = true; }
     x = clamp(x, 8, Math.max(8, state.vw - w - 8));
     ctx.save();
-    ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetY = 3;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 4;
     roundRect(x, y, w, h, 3);
-    ctx.fillStyle = "#f1e6ce";
+    ctx.fillStyle = "#1b1c17";
     ctx.fill();
     ctx.restore();
     roundRect(x, y, w, h, 3);
-    ctx.strokeStyle = "#241c13";
-    ctx.lineWidth = 1.4;
+    ctx.strokeStyle = "rgba(178, 163, 137, 0.32)";
+    ctx.lineWidth = 1.2;
     ctx.stroke();
     ctx.textBaseline = "alphabetic";
     const icon = iconCanvas(m.type, 2);
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(icon, x + 8, y + 9, 16, 16);
     ctx.imageSmoothingEnabled = true;
-    ctx.fillStyle = "#241c13";
+    ctx.fillStyle = "#eee3cf";
     ctx.font = "600 11.5px " + FONT_SANS;
     ctx.fillText(name, x + 31, y + 17);
-    ctx.fillStyle = "#a4561d";
+    ctx.fillStyle = "#c99155";
     ctx.font = "500 9.5px " + FONT_MONO;
     ctx.fillText(coords, x + 31, y + 30);
     const tipY = below ? y : y + h;
@@ -1976,9 +2014,9 @@
     ctx.lineTo(mx + 5, tipY);
     ctx.lineTo(mx, below ? y - 5 : y + h + 5);
     ctx.closePath();
-    ctx.fillStyle = "#f1e6ce";
+    ctx.fillStyle = "#1b1c17";
     ctx.fill();
-    ctx.strokeStyle = "#241c13";
+    ctx.strokeStyle = "rgba(178, 163, 137, 0.32)";
     ctx.lineWidth = 1.2;
     ctx.stroke();
   }
@@ -1988,6 +2026,7 @@
     ctx.fillRect(0, 0, state.vw, state.vh);
     drawDotGrid();
     drawCachedTiles();
+    drawTerrainVeil();
     drawGraticule();
     projectMarkers();
     updateHoverMarker();
@@ -2748,6 +2787,13 @@
   }
 
   function onKeyDown(e) {
+    if (state.enchantOpen) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeEnchant();
+      }
+      return;
+    }
     if (state.mapShown) {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -2791,6 +2837,313 @@
         scheduleDiorama();
       }
     }
+  }
+
+  /* ------------------------------------------------------------ enchanting */
+
+  // Small line glyphs for the gear picker. They share one 24x24 optical box
+  // and a single stroke weight, so the row reads as a set rather than a pile
+  // of mismatched clip art.
+  const ENCHANT_ICONS = {
+    sword: [
+      "M21 3v5.5L10.5 19 8 16.5 18.5 6z",
+      "M6.5 14.5 12 20",
+      "M7 17 3 21",
+      "M2.4 20.4 3.6 21.6",
+    ],
+    pickaxe: [
+      "M3.5 9.5C6.5 4.8 15.5 4.2 20.5 8.5",
+      "M3.5 9.5 2.8 11.4M20.5 8.5 21.2 10.4",
+      "M12 8 8.5 21",
+    ],
+    axe: [
+      "M13 4c4.5 0 8 3.5 7.5 8.5L13.5 11z",
+      "M13.5 7 7.5 21",
+      "M19.4 6.6 20.5 12.5",
+    ],
+    shovel: [
+      "M10 3h4v3c2.7 1.4 3.6 4.3 2 6.5L12 16 8 12.5C6.4 10.3 7.3 7.4 10 6z",
+      "M12 16v5",
+    ],
+    helmet: [
+      "M4.5 13C4.5 7.7 7.6 4.5 12 4.5s7.5 3.2 7.5 8.5v3H15v-3.8H9V16H4.5z",
+      "M9 16h6",
+    ],
+    chestplate: [
+      "M8.5 4.5 12 3l3.5 1.5L20.5 7l-1.8 5.3-2.7-1V21H8v-9.7l-2.7 1L3.5 7z",
+      "M9 4.5c.7 1.6 5.3 1.6 6 0",
+    ],
+    leggings: [
+      "M7 3h10l1 18h-4.5L12 10.5 10.5 21H6z",
+      "M7 6.5h10",
+    ],
+    boots: [
+      "M6 4h4v9l3 3v4H4v-5l2-3z",
+      "M4 19.5h9",
+    ],
+    bow: [
+      "M8 4c8 2.6 8 13.4 0 16",
+      "M8 4v16",
+      "M4 12h10M11.5 9.5 14 12l-2.5 2.5",
+    ],
+    crossbow: [
+      "M8 5c-5 2.4-5 11.6 0 14",
+      "M8 5v14M5 12h15",
+      "M13 12v4",
+      "M10 9.5h7M15 8l2.5 1.5L15 11",
+    ],
+    trident: [
+      "M12 3v18",
+      "M7 4v5c0 2.2 2 3.5 5 3.5s5-1.3 5-3.5V4",
+      "M7 4v2.5M17 4v2.5",
+      "M9.5 21h5",
+    ],
+    fishing_rod: [
+      "M4 21 18 4",
+      "M18 4c-3.5 5.5 2 7.5-1.5 12.5",
+      "M16.5 16.5c-1.5 1.8-1 3.2.8 3.2 1.5 0 2-1.4 1-2.4",
+      "M8 13.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 1 0-3 0",
+    ],
+  };
+
+  function enchantIcon(type) {
+    const svg = document.createElementNS(SVGNS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    for (const d of ENCHANT_ICONS[type] || []) {
+      const path = document.createElementNS(SVGNS, "path");
+      path.setAttribute("d", d);
+      svg.appendChild(path);
+    }
+    return svg;
+  }
+
+  function buildEnchantItems() {
+    for (const [id, item] of Object.entries(ENCH.ITEMS)) {
+      const button = el("button", "enchant-item");
+      button.type = "button";
+      button.setAttribute("data-item", id);
+      button.setAttribute("aria-pressed", "false");
+      button.title = item.label;
+      button.appendChild(enchantIcon(id));
+      const label = el("span");
+      label.textContent = item.label;
+      button.appendChild(label);
+      button.addEventListener("click", () => {
+        if (state.enchantItem === id) return;
+        state.enchantItem = id;
+        const materials = ENCH.itemMaterials(id);
+        if (materials.length && !materials.some((m) => m.id === state.enchantMaterial)) {
+          state.enchantMaterial = materials[0].id;
+        }
+        rebuildEnchantMaterials();
+        updateEnchantUI();
+      });
+      enchantItemsEl.appendChild(button);
+    }
+  }
+
+  function rebuildEnchantMaterials() {
+    enchantMaterialsEl.textContent = "";
+    const materials = ENCH.itemMaterials(state.enchantItem);
+    enchantMaterialsEl.hidden = materials.length === 0;
+    for (const material of materials) {
+      const button = el("button", "enchant-material");
+      button.type = "button";
+      button.setAttribute("data-material", material.id);
+      button.setAttribute("aria-pressed", state.enchantMaterial === material.id ? "true" : "false");
+      button.classList.toggle("is-on", state.enchantMaterial === material.id);
+      const dot = el("i");
+      dot.style.setProperty("--mat", material.color);
+      button.appendChild(dot);
+      const label = el("span");
+      label.textContent = material.label;
+      button.appendChild(label);
+      button.addEventListener("click", () => {
+        if (state.enchantMaterial === material.id) return;
+        state.enchantMaterial = material.id;
+        for (const node of enchantMaterialsEl.children) {
+          const on = node.getAttribute("data-material") === material.id;
+          node.classList.toggle("is-on", on);
+          node.setAttribute("aria-pressed", on ? "true" : "false");
+        }
+        updateEnchantUI();
+      });
+      enchantMaterialsEl.appendChild(button);
+    }
+  }
+
+  function buildEnchantShelves() {
+    for (let i = 0; i < 15; i++) enchantShelvesEl.appendChild(el("i"));
+  }
+
+  function buildEnchantOffers() {
+    for (let slot = 0; slot < 3; slot++) {
+      const button = el("button", "enchant-offer");
+      button.type = "button";
+      button.setAttribute("data-slot", String(slot));
+      button.setAttribute("aria-pressed", "false");
+      const top = el("span", "enchant-offer-top");
+      const name = el("span", "enchant-offer-slot");
+      name.textContent = ENCH.SLOT_NAMES[slot];
+      const lapis = el("span", "enchant-offer-lapis");
+      lapis.textContent = "◆ " + ENCH.SLOT_COSTS[slot];
+      top.appendChild(name);
+      top.appendChild(lapis);
+      const level = el("span", "enchant-offer-level");
+      const foot = el("span", "enchant-offer-foot");
+      foot.textContent = ENCH.SLOT_COSTS[slot] + " lapis · spends " + ENCH.SLOT_COSTS[slot] + (slot ? " levels" : " level");
+      button.appendChild(top);
+      button.appendChild(level);
+      button.appendChild(foot);
+      button.addEventListener("click", () => {
+        state.enchantSlot = slot;
+        updateEnchantUI();
+      });
+      enchantOffersEl.appendChild(button);
+    }
+  }
+
+  function roman(n) {
+    return ["I", "II", "III", "IV", "V"][n - 1] || String(n);
+  }
+
+  function updateEnchantUI() {
+    if (!state.enchantOpen || !ENCH) return;
+    const item = ENCH.ITEMS[state.enchantItem];
+    const materials = ENCH.itemMaterials(state.enchantItem);
+    const material = materials.find((m) => m.id === state.enchantMaterial) || materials[0] || null;
+    if (material && state.enchantMaterial !== material.id) state.enchantMaterial = material.id;
+    const enchantability = ENCH.enchantability(state.enchantItem, material ? material.id : "");
+    const shelves = state.enchantShelves;
+
+    for (const node of enchantItemsEl.children) {
+      const on = node.getAttribute("data-item") === state.enchantItem;
+      node.classList.toggle("is-on", on);
+      node.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    for (const node of enchantMaterialsEl.children) {
+      const on = node.getAttribute("data-material") === state.enchantMaterial;
+      node.classList.toggle("is-on", on);
+      node.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+
+    enchantGearMetaEl.textContent = (material ? material.label + " " : "") + item.label.toLowerCase() +
+      " · enchantability " + enchantability;
+    enchantShelfCountEl.textContent = String(shelves);
+    enchantShelfInput.value = String(shelves);
+    enchantShelfInput.style.setProperty("--fill", (shelves / 15 * 100).toFixed(2) + "%");
+    for (let i = 0; i < enchantShelvesEl.children.length; i++) {
+      enchantShelvesEl.children[i].classList.toggle("on", i < shelves);
+    }
+    if (shelves >= 15) {
+      enchantShelfHint.textContent = "At the cap — the bottom offer is always level 30.";
+    } else if (shelves === 0) {
+      enchantShelfHint.textContent = "No shelves — the table tops out at level 8.";
+    } else {
+      const need = 15 - shelves;
+      enchantShelfHint.textContent = need + (need === 1 ? " more shelf" : " more shelves") +
+        " to guarantee a level 30 bottom offer.";
+    }
+
+    const offers = ENCH.offers(shelves);
+    for (const node of enchantOffersEl.children) {
+      const slot = Number(node.getAttribute("data-slot"));
+      const offer = offers[slot];
+      const level = node.querySelector(".enchant-offer-level");
+      level.textContent = formatInt(offer.min) + (offer.min === offer.max ? "" : "–" + formatInt(offer.max));
+      const on = slot === state.enchantSlot;
+      node.classList.toggle("is-on", on);
+      node.setAttribute("aria-pressed", on ? "true" : "false");
+      node.setAttribute("aria-label", offer.name + " offer, level " +
+        (offer.min === offer.max ? formatInt(offer.min) : formatInt(offer.min) + " to " + formatInt(offer.max)) +
+        ", costs " + offer.lapis + " lapis and " + offer.levelsSpent +
+        (offer.levelsSpent === 1 ? " level" : " levels"));
+    }
+
+    const selected = offers[state.enchantSlot];
+    enchantOddsTitleEl.textContent = selected.name + " offer";
+    enchantOddsLevelEl.textContent = selected.min === selected.max
+      ? "level " + formatInt(selected.min)
+      : "levels " + formatInt(selected.min) + "–" + formatInt(selected.max);
+
+    const rows = ENCH.odds(state.enchantItem, material ? material.id : "", shelves, state.enchantSlot);
+    enchantOddsEl.textContent = "";
+    if (!rows.length) {
+      const empty = el("div", "enchant-empty");
+      empty.setAttribute("role", "listitem");
+      empty.textContent = "No table enchantment can land on this roll. Raise the shelves or choose a different offer.";
+      enchantOddsEl.appendChild(empty);
+      return;
+    }
+    for (const row of rows) {
+      const line = el("div", "enchant-odd");
+      line.setAttribute("role", "listitem");
+      const pctText = row.chance < 0.01 ? "under 1 percent" : Math.round(row.chance * 100) + " percent";
+      line.setAttribute("aria-label", row.label + ", maximum tier " + roman(row.maxLevel) +
+        ", " + pctText + " chance to appear");
+      const name = el("span", "enchant-odd-name");
+      name.textContent = row.label;
+      const tier = el("span", "enchant-odd-tier");
+      tier.textContent = roman(row.maxLevel);
+      tier.title = "Maximum tier on this item";
+      const bar = el("span", "enchant-odd-bar");
+      const fill = el("i");
+      fill.style.width = Math.max(2, Math.round(row.chance * 100)) + "%";
+      bar.appendChild(fill);
+      const pct = el("span", "enchant-odd-pct");
+      pct.textContent = row.chance < 0.01 ? "<1%" : Math.round(row.chance * 100) + "%";
+      line.appendChild(name);
+      line.appendChild(tier);
+      line.appendChild(bar);
+      line.appendChild(pct);
+      enchantOddsEl.appendChild(line);
+    }
+  }
+
+  function queueEnchantUI() {
+    if (!state.enchantOpen || state.enchantRaf) return;
+    state.enchantRaf = requestAnimationFrame(() => {
+      state.enchantRaf = 0;
+      updateEnchantUI();
+    });
+  }
+
+  function openEnchant() {
+    if (state.enchantOpen || state.mapShown) return;
+    state.enchantOpen = true;
+    clearTimeout(state.enchantTimer);
+    seedInput.blur();
+    homeEl.classList.add("is-out");
+    homeEl.setAttribute("aria-hidden", "true");
+    homeEl.setAttribute("inert", "");
+    state.enchantTimer = setTimeout(() => {
+      if (state.enchantOpen) homeEl.hidden = true;
+    }, 320);
+    enchantEl.hidden = false;
+    enchantEl.scrollTop = 0;
+    rootEl.classList.add("enchant-mode");
+    document.title = "Enchanting table — seedmap";
+    updateEnchantUI();
+    requestAnimationFrame(() => enchantEl.focus({ preventScroll: true }));
+  }
+
+  function closeEnchant() {
+    if (!state.enchantOpen) return;
+    state.enchantOpen = false;
+    clearTimeout(state.enchantTimer);
+    if (state.enchantRaf) {
+      cancelAnimationFrame(state.enchantRaf);
+      state.enchantRaf = 0;
+    }
+    enchantEl.hidden = true;
+    homeEl.hidden = false;
+    homeEl.classList.remove("is-out");
+    homeEl.removeAttribute("aria-hidden");
+    homeEl.removeAttribute("inert");
+    rootEl.classList.remove("enchant-mode");
+    document.title = "Seedmap — offline Minecraft seed atlas";
+    requestAnimationFrame(() => enchantBtn.focus());
   }
 
   /* ------------------------------------------------------------ home flow */
@@ -3067,8 +3420,26 @@
     measureTotalEl = document.getElementById("measureTotal");
     measureTimeEl = document.getElementById("measureTime");
     measureRouteEl = document.getElementById("measureRoute");
+    enchantEl = document.getElementById("enchant");
+    enchantBtn = document.getElementById("enchantBtn");
+    enchantBack = document.getElementById("enchantBack");
+    enchantItemsEl = document.getElementById("enchantItems");
+    enchantMaterialsEl = document.getElementById("enchantMaterials");
+    enchantGearMetaEl = document.getElementById("enchantGearMeta");
+    enchantShelfInput = document.getElementById("enchantShelfInput");
+    enchantShelfCountEl = document.getElementById("enchantShelfCount");
+    enchantShelfHint = document.getElementById("enchantShelfHint");
+    enchantShelvesEl = document.getElementById("enchantShelves");
+    enchantOffersEl = document.getElementById("enchantOffers");
+    enchantOddsEl = document.getElementById("enchantOdds");
+    enchantOddsTitleEl = document.getElementById("enchantOddsTitle");
+    enchantOddsLevelEl = document.getElementById("enchantOddsLevel");
 
     buildKey();
+    buildEnchantItems();
+    buildEnchantShelves();
+    buildEnchantOffers();
+    rebuildEnchantMaterials();
     drawHomeHorizon();
     updateMeasureUI();
     resize();
@@ -3092,6 +3463,13 @@
     dioramaBtn.addEventListener("click", () => setMode("diorama"));
     measureBtn.addEventListener("click", () => setMeasureActive(!state.measure.active));
     measureClear.addEventListener("click", clearMeasure);
+
+    enchantBtn.addEventListener("click", openEnchant);
+    enchantBack.addEventListener("click", closeEnchant);
+    enchantShelfInput.addEventListener("input", () => {
+      state.enchantShelves = clamp(Math.round(Number(enchantShelfInput.value) || 0), 0, 15);
+      queueEnchantUI();
+    });
 
     seedForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -3130,6 +3508,23 @@
       get mode() { return state.mode; },
       get points() { return state.measure.points.map((p) => ({ x: p.x, z: p.z })); },
       get distance() { return measureStats().total; },
+      get measureActive() { return state.measure.active; },
+      get enchantOpen() { return state.enchantOpen; },
+      get enchant() {
+        if (!ENCH) return null;
+        const material = ENCH.itemMaterials(state.enchantItem)
+          .find((m) => m.id === state.enchantMaterial);
+        return {
+          item: state.enchantItem,
+          material: material ? material.id : "",
+          shelves: state.enchantShelves,
+          slot: state.enchantSlot,
+          offers: ENCH.offers(state.enchantShelves),
+          odds: ENCH.odds(state.enchantItem, material ? material.id : "", state.enchantShelves, state.enchantSlot),
+        };
+      },
+      openEnchant,
+      closeEnchant,
       get diorama() {
         const g = diorama.grid;
         return g ? {
@@ -3149,7 +3544,9 @@
     };
 
     if (window.matchMedia && window.matchMedia("(pointer: fine)").matches) {
-      setTimeout(() => seedInput.focus(), 250);
+      setTimeout(() => {
+        if (!state.enchantOpen && !state.mapShown) seedInput.focus();
+      }, 250);
     }
     requestAnimationFrame(frame);
   }

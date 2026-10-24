@@ -2,28 +2,33 @@
 <svg id="root" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      width="100%" height="100%" role="application" aria-label="Offline Minecraft seed map">
   <title>Seedmap — offline Minecraft seed atlas</title>
-  <desc>Enter a Minecraft Java 1.21.4 (Winter Drop) seed to explore its biomes and structures, tilt the map into a diorama, and measure a route. Runs entirely offline in this single SVG file.</desc>
+  <desc>Enter a Minecraft Java 1.21.4 (Winter Drop) seed to explore its biomes and structures, tilt the map into a diorama, measure a route, and plan an enchanting table. Runs entirely offline in this single SVG file.</desc>
 
   <style><![CDATA[
 /* Seedmap — all styles inline in the SVG. No external assets. */
 
 :root {
   color-scheme: dark;
-  --bg: #14110d;
-  --stone: #211c16;
-  --stone-deep: #17130f;
-  --stone-edge: #4b3c29;
-  --cream: #f2e8d6;
-  --cream-dim: #b6a488;
-  --cream-faint: #a08c72;
-  --paper: #f1e6ce;
-  --paper-warm: #e9dcc0;
-  --paper-edge: #4c3a23;
-  --ink: #241c13;
-  --ink-soft: #3c2f1f;
-  --ink-mute: #6a5234;
-  --accent: #e08a3c;
-  --accent-deep: #a4561d;
+  --bg: #11100d;
+  --bg-deep: #0c0b09;
+  --stone: #191712;
+  --stone-deep: #12100d;
+  --stone-edge: #3b3226;
+  --cream: #eadfca;
+  --cream-dim: #b8aa92;
+  --cream-faint: #9a8d77;
+  --paper: rgba(23, 23, 19, 0.95);
+  --paper-solid: #171713;
+  --paper-warm: #1e1d18;
+  --paper-edge: #4c4232;
+  --ink: #eee3cf;
+  --ink-soft: #d5c6ae;
+  --ink-mute: #a3947c;
+  --accent: #c99155;
+  --accent-deep: #b5743d;
+  --accent-soft: rgba(201, 145, 85, 0.17);
+  --arcane: #a99ac8;
+  --arcane-deep: #76668f;
   --ui: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   --text: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
@@ -85,10 +90,10 @@ svg#root { background: var(--bg); }
   padding: 30px 24px 24px;
   pointer-events: auto;
   background:
-    radial-gradient(760px 460px at 50% 42%, rgba(224, 138, 60, 0.06), transparent 70%),
-    radial-gradient(rgba(242, 232, 214, 0.045) 0.5px, transparent 0.9px);
+    radial-gradient(680px 420px at 50% 40%, rgba(201, 145, 85, 0.045), transparent 70%),
+    radial-gradient(rgba(234, 223, 202, 0.035) 0.5px, transparent 0.9px);
   background-color: var(--bg);
-  background-size: auto, 22px 22px;
+  background-size: auto, 24px 24px;
   transition: opacity 0.42s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   animation: home-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -138,17 +143,17 @@ svg#root { background: var(--bg); }
   gap: 7px;
   font-family: var(--ui);
   font-size: 8.5px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--cream-dim);
+  color: var(--cream-faint);
 }
 
 .tag-dot {
   width: 5px;
   height: 5px;
-  background: #7fae53;
+  background: #799466;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(127, 174, 83, 0.15);
+  box-shadow: 0 0 0 2px rgba(121, 148, 102, 0.13);
 }
 
 .home-center {
@@ -159,12 +164,13 @@ svg#root { background: var(--bg); }
 
 .seed-card {
   position: relative;
-  border: 2px solid var(--stone-edge);
-  border-radius: 4px;
+  border: 1px solid var(--stone-edge);
+  border-radius: 5px;
   background: var(--stone);
   box-shadow:
-    0 5px 0 #0b0806,
-    0 22px 48px rgba(0, 0, 0, 0.45);
+    inset 0 1px 0 rgba(255, 241, 217, 0.035),
+    0 2px 0 #0b0906,
+    0 24px 54px rgba(0, 0, 0, 0.44);
   overflow: hidden;
 }
 
@@ -173,8 +179,9 @@ svg#root { background: var(--bg); }
   width: 100%;
   height: auto;
   background: #0b171b;
-  border-bottom: 2px solid var(--stone-edge);
+  border-bottom: 1px solid var(--stone-edge);
   image-rendering: pixelated;
+  filter: saturate(0.88) brightness(0.92);
 }
 
 .seed-form { display: block; padding: 16px 18px 15px; }
@@ -190,9 +197,9 @@ svg#root { background: var(--bg); }
   font-family: var(--ui);
   font-size: 8.5px;
   font-weight: 700;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #c3b094;
+  color: #b9ac96;
 }
 
 .edition {
@@ -206,16 +213,16 @@ svg#root { background: var(--bg); }
   position: relative;
   display: flex;
   align-items: center;
-  border: 2px solid var(--stone-edge);
+  border: 1px solid #40372a;
   border-radius: 3px;
-  background: var(--stone-deep);
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
-  transition: border-color 0.15s ease;
+  background: #0f0e0b;
+  box-shadow: inset 0 2px 7px rgba(0, 0, 0, 0.45);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .seed-line:focus-within {
-  border-color: var(--accent);
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(224, 138, 60, 0.3);
+  border-color: rgba(201, 145, 85, 0.75);
+  box-shadow: inset 0 2px 7px rgba(0, 0, 0, 0.45), 0 0 0 3px rgba(201, 145, 85, 0.08);
 }
 
 @keyframes seed-nudge {
@@ -241,7 +248,7 @@ svg#root { background: var(--bg); }
   background: transparent;
   color: var(--cream);
   font-family: var(--ui);
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 500;
   letter-spacing: 0.01em;
   caret-color: var(--accent);
@@ -256,7 +263,7 @@ svg#root { background: var(--bg); }
 }
 
 #seedInput::selection {
-  background: rgba(224, 138, 60, 0.4);
+  background: rgba(201, 145, 85, 0.35);
   color: #fff;
 }
 
@@ -270,41 +277,45 @@ svg#root { background: var(--bg); }
   height: 42px;
   margin-top: 10px;
   padding: 0 12px 0 14px;
-  border: 2px solid #9c5320;
+  border: 1px solid #6d5940;
   border-radius: 3px;
-  background: var(--accent);
-  color: #1e1308;
+  background: linear-gradient(180deg, #332a1f, #272119);
+  color: var(--cream);
   font-family: var(--ui);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.17em;
   text-transform: uppercase;
   cursor: pointer;
   outline: none;
   box-shadow:
-    inset 0 1px 0 rgba(255, 245, 225, 0.45),
-    0 3px 0 #6d3410;
+    inset 0 1px 0 rgba(255, 241, 215, 0.07),
+    0 2px 0 #0b0906;
   -webkit-appearance: none;
   appearance: none;
-  transition: background 0.12s ease, transform 0.06s ease, box-shadow 0.06s ease;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.06s ease, box-shadow 0.06s ease;
 }
 
-.go:hover { background: #e89a55; }
+.go:hover {
+  background: linear-gradient(180deg, #3b3023, #2c251b);
+  border-color: rgba(201, 145, 85, 0.55);
+}
 
 .go:active {
-  transform: translateY(2px);
-  box-shadow: inset 0 1px 0 rgba(255, 245, 225, 0.3), 0 1px 0 #6d3410;
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 0 rgba(255, 241, 215, 0.05), 0 1px 0 #0b0906;
 }
 
 .go:focus-visible {
-  outline: 2px solid var(--cream);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
 .go-key {
   font-size: 13px;
   letter-spacing: 0;
-  opacity: 0.6;
+  color: var(--accent);
+  opacity: 0.85;
 }
 
 .seed-help {
@@ -317,12 +328,12 @@ svg#root { background: var(--bg); }
 }
 
 .seed-help b {
-  color: #cbb693;
+  color: var(--cream-dim);
   font-weight: 600;
 }
 
 .seed-help .dot {
-  color: #6c5d4a;
+  color: #645849;
   padding: 0 6px;
 }
 
@@ -336,17 +347,73 @@ svg#root { background: var(--bg); }
   gap: 20px;
   font-family: var(--ui);
   font-size: 7.5px;
-  letter-spacing: 0.17em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #a08c72;
+  color: #897b66;
   z-index: 2;
 }
 
 .home-bottom span:last-child { text-align: right; }
 
+.home-feature {
+  position: absolute;
+  right: 26px;
+  bottom: 47px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 31px;
+  padding: 0 10px 0 9px;
+  border: 1px solid rgba(185, 166, 137, 0.2);
+  border-radius: 3px;
+  background: rgba(27, 25, 20, 0.72);
+  color: var(--cream-faint);
+  font-family: var(--ui);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.home-feature svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.home-feature:hover {
+  color: var(--cream);
+  border-color: rgba(201, 145, 85, 0.42);
+  background: rgba(42, 36, 27, 0.86);
+}
+
+.home-feature:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.home-feature-arrow {
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
 .home.is-out .home-top,
 .home.is-out .home-center,
-.home.is-out .home-bottom {
+.home.is-out .home-bottom,
+.home.is-out .home-feature {
   transition: opacity 0.25s ease;
   opacity: 0;
 }
@@ -372,15 +439,16 @@ svg#root { background: var(--bg); }
     radial-gradient(128% 108% at 50% 46%, transparent 66%, rgba(5, 8, 9, 0.2) 100%);
 }
 
-/* Parchment chrome shared by every map panel. */
+/* Smoked-glass chrome shared by every map panel. Dark surfaces keep the
+   terrain and the 16px marker art as the only bright things on screen. */
 .hud, .tools, .measure, .key, .hint, .scale {
   color: var(--ink);
-  background: var(--paper);
-  border: 2px solid var(--paper-edge);
-  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(30, 31, 26, 0.95), rgba(20, 21, 17, 0.96));
+  border: 1px solid rgba(178, 163, 137, 0.22);
+  border-radius: 4px;
   box-shadow:
-    0 3px 0 rgba(12, 8, 4, 0.42),
-    0 12px 30px rgba(0, 0, 0, 0.26);
+    inset 0 1px 0 rgba(255, 242, 215, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .hud {
@@ -401,11 +469,11 @@ svg#root { background: var(--bg); }
 
 .hud-label {
   font-family: var(--ui);
-  font-size: 7px;
+  font-size: 7.5px;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ink-mute);
+  color: var(--cream-faint);
 }
 
 .seed-out {
@@ -413,7 +481,7 @@ svg#root { background: var(--bg); }
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: var(--ink);
+  color: var(--cream);
   max-width: 32vw;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -424,7 +492,7 @@ svg#root { background: var(--bg); }
   width: 100%;
   height: 2px;
   margin-top: 3px;
-  background: #cbb996;
+  background: #3a362c;
   overflow: hidden;
   transition: opacity 0.5s ease;
 }
@@ -456,26 +524,26 @@ svg#root { background: var(--bg); }
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.01em;
-  color: var(--ink);
+  color: var(--cream);
   font-variant-numeric: tabular-nums;
 }
 
 .biome-line {
   font-family: var(--ui);
-  font-size: 7.5px;
+  font-size: 7.8px;
   font-weight: 600;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
-  color: var(--ink-mute);
+  color: var(--cream-faint);
   max-width: 42vw;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.biome-line .structure { color: var(--accent-deep); }
+.biome-line .structure { color: var(--accent); }
 
-.biome-line .sep { padding: 0 5px; color: #b09d7c; }
+.biome-line .sep { padding: 0 5px; color: #746753; }
 
 /* tools */
 
@@ -503,18 +571,18 @@ svg#root { background: var(--bg); }
   border: 0;
   border-radius: 2px;
   background: transparent;
-  color: var(--ink-soft);
+  color: var(--cream-dim);
   font-family: var(--ui);
-  font-size: 8px;
+  font-size: 8.3px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
   outline: none;
   -webkit-appearance: none;
   appearance: none;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
 
 .tool svg {
@@ -527,21 +595,21 @@ svg#root { background: var(--bg); }
   stroke-linejoin: round;
 }
 
-.tool:hover { background: rgba(76, 58, 35, 0.1); }
+.tool:hover { background: rgba(238, 227, 207, 0.055); color: var(--cream); }
 
 .tool:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 .tool.is-on {
-  background: var(--accent);
-  color: #211508;
-  box-shadow: inset 0 1px 0 rgba(255, 245, 225, 0.45), 0 1px 0 #8d4a18;
+  background: rgba(201, 145, 85, 0.17);
+  color: var(--cream);
+  box-shadow: inset 0 0 0 1px rgba(201, 145, 85, 0.38);
 }
 
 .tool-divider {
   width: 1px;
   height: 17px;
   margin: 0 2px;
-  background: #cdbb99;
+  background: rgba(178, 163, 137, 0.2);
 }
 
 .map-mode.measuring #mapCanvas { cursor: crosshair; }
@@ -571,23 +639,23 @@ svg#root { background: var(--bg); }
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ink-mute);
+  color: var(--cream-faint);
 }
 
 .measure-count {
   font-family: var(--ui);
   font-size: 7.5px;
   letter-spacing: 0.02em;
-  color: #6f5a3d;
+  color: var(--cream-faint);
 }
 
 .measure-clear {
   margin-left: auto;
   padding: 3px 6px;
-  border: 1px solid #cdbb99;
+  border: 1px solid rgba(178, 163, 137, 0.28);
   border-radius: 2px;
   background: transparent;
-  color: var(--accent-deep);
+  color: var(--accent);
   font-family: var(--ui);
   font-size: 7.5px;
   font-weight: 700;
@@ -597,7 +665,7 @@ svg#root { background: var(--bg); }
   outline: none;
 }
 
-.measure-clear:hover { background: rgba(224, 138, 60, 0.14); }
+.measure-clear:hover { background: var(--accent-soft); }
 .measure-clear:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 .measure-total {
@@ -609,7 +677,7 @@ svg#root { background: var(--bg); }
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 1;
-  color: var(--ink);
+  color: var(--cream);
 }
 
 .measure-unit {
@@ -618,7 +686,7 @@ svg#root { background: var(--bg); }
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-mute);
+  color: var(--cream-faint);
 }
 
 .measure-time {
@@ -627,7 +695,7 @@ svg#root { background: var(--bg); }
   font-size: 8.5px;
   line-height: 1.5;
   letter-spacing: -0.01em;
-  color: var(--accent-deep);
+  color: var(--accent);
 }
 
 .measure-route {
@@ -635,7 +703,7 @@ svg#root { background: var(--bg); }
   font-family: var(--ui);
   font-size: 7.5px;
   line-height: 1.5;
-  color: var(--ink-mute);
+  color: var(--cream-faint);
 }
 
 /* key */
@@ -644,12 +712,13 @@ svg#root { background: var(--bg); }
   position: fixed;
   left: 14px;
   bottom: 14px;
-  width: 384px;
-  padding: 10px 12px 9px;
+  width: 392px;
+  padding: 11px 13px 10px;
   pointer-events: auto;
   z-index: 4;
-  background-image: linear-gradient(rgba(120, 92, 52, 0.035) 1px, transparent 1px);
-  background-size: 100% 3px;
+  background-color: #171713;
+  background-image: linear-gradient(rgba(234, 223, 202, 0.018) 1px, transparent 1px);
+  background-size: 100% 4px;
 }
 
 .key-head {
@@ -663,16 +732,16 @@ svg#root { background: var(--bg); }
   font-family: var(--ui);
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--cream);
 }
 
 .key-head .s {
   font-family: var(--ui);
   font-size: 7.5px;
   letter-spacing: 0.06em;
-  color: #6f5a3d;
+  color: var(--cream-faint);
 }
 
 .key-grid {
@@ -687,9 +756,9 @@ svg#root { background: var(--bg); }
   align-items: center;
   gap: 6px;
   min-width: 0;
-  height: 21px;
+  height: 22px;
   font-family: var(--text);
-  font-size: 8.5px;
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.005em;
   color: var(--ink-soft);
@@ -720,17 +789,17 @@ svg#root { background: var(--bg); }
 
 .key-rule {
   height: 1px;
-  margin: 7px 0 6px;
-  background: #d9c8a7;
+  margin: 8px 0 7px;
+  background: rgba(178, 163, 137, 0.18);
 }
 
 .key-sub {
   font-family: var(--ui);
   font-size: 7.5px;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #6f5a3d;
+  color: var(--cream-faint);
   margin-bottom: 5px;
 }
 
@@ -747,10 +816,10 @@ svg#root { background: var(--bg); }
   gap: 5px;
   min-width: 0;
   font-family: var(--text);
-  font-size: 7.8px;
+  font-size: 8.1px;
   line-height: 1.1;
   letter-spacing: 0.005em;
-  color: #5b4a34;
+  color: var(--cream-dim);
   white-space: nowrap;
 }
 
@@ -766,7 +835,7 @@ svg#root { background: var(--bg); }
   width: 5px;
   height: 8px;
   border-radius: 1px;
-  box-shadow: inset 0 0 0 1px rgba(36, 28, 19, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(12, 11, 9, 0.36);
 }
 
 .biome-name {
@@ -776,12 +845,12 @@ svg#root { background: var(--bg); }
 }
 
 .key-note {
-  margin-top: 7px;
+  margin-top: 8px;
   font-family: var(--text);
-  font-size: 7.3px;
+  font-size: 7.6px;
   line-height: 1.55;
   letter-spacing: 0.01em;
-  color: #6f5a3d;
+  color: var(--cream-faint);
 }
 
 /* scale + hint */
@@ -802,16 +871,16 @@ svg#root { background: var(--bg); }
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 4px;
-  color: var(--ink-soft);
+  color: var(--cream-dim);
 }
 
 .scale-bar {
   width: 100px;
   height: 5px;
   margin-left: auto;
-  border-bottom: 2px solid var(--ink-soft);
-  border-left: 2px solid var(--ink-soft);
-  border-right: 2px solid var(--ink-soft);
+  border-bottom: 2px solid var(--cream-dim);
+  border-left: 2px solid var(--cream-dim);
+  border-right: 2px solid var(--cream-dim);
   transition: width 0.15s linear;
 }
 
@@ -820,13 +889,13 @@ svg#root { background: var(--bg); }
   top: 58px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 4px 9px;
+  padding: 5px 10px;
   font-family: var(--ui);
   font-size: 7.5px;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #5d4a30;
+  color: var(--cream-dim);
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.7s ease;
@@ -835,10 +904,688 @@ svg#root { background: var(--bg); }
 
 .hint.show { opacity: 1; }
 
+/* ------------------------------------------------------------- enchanting */
+
+.enchant {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  outline: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  color: var(--ink);
+  pointer-events: auto;
+  background:
+    radial-gradient(720px 540px at 76% 13%, rgba(118, 97, 150, 0.095), transparent 70%),
+    radial-gradient(560px 420px at 12% 86%, rgba(201, 145, 85, 0.035), transparent 70%),
+    linear-gradient(180deg, #12110e, #0e0d0a 60%, #11100d);
+  scrollbar-color: #3d372c transparent;
+  animation: enchant-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.enchant::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(234, 223, 202, 0.03) 0.5px, transparent 0.9px);
+  background-size: 24px 24px;
+}
+
+@keyframes enchant-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.enchant-shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1180px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 26px 42px 44px;
+  display: flex;
+  flex-direction: column;
+}
+
+.enchant-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 28px;
+}
+
+.enchant-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--cream-dim);
+  font-family: var(--ui);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.15s ease;
+}
+
+.enchant-back svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.enchant-back:hover { color: var(--cream); }
+.enchant-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.enchant-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--ui);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream-faint);
+}
+
+.enchant-tag i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--arcane);
+  box-shadow: 0 0 0 3px rgba(169, 154, 200, 0.09);
+}
+
+.enchant-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(32px, 5vw, 76px);
+}
+
+.enchant-intro { padding-top: 8px; }
+
+.enchant-kicker {
+  margin: 0 0 14px;
+  font-family: var(--ui);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.enchant-intro h1 {
+  max-width: 350px;
+  margin: 0;
+  font-family: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  font-size: clamp(40px, 4.35vw, 58px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: var(--cream);
+}
+
+.enchant-lede {
+  max-width: 320px;
+  margin: 17px 0 0;
+  font-family: var(--text);
+  font-size: 12.5px;
+  line-height: 1.65;
+  letter-spacing: 0.005em;
+  color: var(--cream-dim);
+}
+
+.enchant-scene {
+  position: relative;
+  height: 228px;
+  margin-top: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(169, 154, 200, 0.16);
+  border-radius: 6px;
+  background:
+    radial-gradient(180px 130px at 50% 72%, rgba(130, 104, 172, 0.16), transparent 72%),
+    linear-gradient(180deg, #14120f, #0e0d0b);
+  box-shadow: inset 0 1px 0 rgba(255, 242, 215, 0.025);
+}
+
+.enchant-scene::before {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(169, 154, 200, 0.2), transparent);
+}
+
+.enchant-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 65%, rgba(8, 7, 6, 0.55));
+}
+
+.enchant-shelves {
+  position: absolute;
+  top: 21px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(5, 34px);
+  gap: 6px;
+  z-index: 1;
+}
+
+.enchant-shelves i {
+  position: relative;
+  width: 34px;
+  height: 28px;
+  border: 1px solid #2b261e;
+  border-radius: 1px;
+  background: #15130f;
+  opacity: 0.3;
+  transition: opacity 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.enchant-shelves i::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  top: 5px;
+  bottom: 10px;
+  background: repeating-linear-gradient(90deg, #7b5a38 0 2px, #423020 2px 4px, #694b30 4px 5px);
+  opacity: 0.6;
+}
+
+.enchant-shelves i::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 5px;
+  height: 3px;
+  background: #382b1e;
+}
+
+.enchant-shelves i.on {
+  opacity: 1;
+  border-color: rgba(201, 145, 85, 0.28);
+  background: #221b14;
+  box-shadow: inset 0 0 0 1px rgba(201, 145, 85, 0.06);
+}
+
+.enchant-table {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  z-index: 2;
+  width: 96px;
+  height: 96px;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 10px rgba(130, 104, 172, 0.22));
+}
+
+.enchant-table svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  shape-rendering: crispEdges;
+}
+
+.enchant-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 13px;
+  font-family: var(--ui);
+  font-size: 7.8px;
+  line-height: 1.55;
+  letter-spacing: 0.035em;
+  color: var(--cream-faint);
+}
+
+.enchant-caption span:first-child { color: var(--cream-dim); }
+
+.enchant-work {
+  padding: 2px 22px 0;
+  border: 1px solid rgba(178, 163, 137, 0.2);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(27, 26, 22, 0.91), rgba(20, 20, 16, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 242, 215, 0.035),
+    0 22px 60px rgba(0, 0, 0, 0.28);
+}
+
+.enchant-block {
+  padding: 17px 0;
+  border-bottom: 1px solid rgba(178, 163, 137, 0.13);
+}
+
+.enchant-block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.enchant-label {
+  font-family: var(--ui);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+.enchant-meta {
+  min-width: 0;
+  font-family: var(--ui);
+  font-size: 7.4px;
+  line-height: 1.45;
+  letter-spacing: 0.025em;
+  text-align: right;
+  color: var(--cream-faint);
+}
+
+.enchant-items {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 12px;
+}
+
+.enchant-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  height: 55px;
+  padding: 5px 2px 4px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--cream-faint);
+  font-family: var(--text);
+  font-size: 8px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.13s ease, background 0.13s ease, border-color 0.13s ease;
+}
+
+.enchant-item svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.enchant-item:hover {
+  color: var(--cream);
+  background: rgba(238, 227, 207, 0.035);
+}
+
+.enchant-item.is-on {
+  color: var(--cream);
+  border-color: rgba(169, 154, 200, 0.4);
+  background: rgba(169, 154, 200, 0.1);
+}
+
+.enchant-item.is-on svg { color: var(--arcane); }
+
+.enchant-item:focus-visible,
+.enchant-material:focus-visible,
+.enchant-offer:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.enchant-materials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 9px;
+}
+
+.enchant-material {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: rgba(238, 227, 207, 0.025);
+  color: var(--cream-faint);
+  font-family: var(--ui);
+  font-size: 7.4px;
+  font-weight: 600;
+  letter-spacing: 0.035em;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.13s ease, background 0.13s ease, border-color 0.13s ease;
+}
+
+.enchant-material i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mat);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.22);
+}
+
+.enchant-material:hover { color: var(--cream); background: rgba(238, 227, 207, 0.05); }
+
+.enchant-material.is-on {
+  color: var(--cream);
+  border-color: rgba(201, 145, 85, 0.38);
+  background: rgba(201, 145, 85, 0.08);
+}
+
+.enchant-shelf-block { padding-bottom: 15px; }
+
+.enchant-power {
+  font-family: var(--ui);
+  font-size: 8px;
+  color: var(--cream-faint);
+}
+
+.enchant-power b {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+}
+
+.enchant-range-wrap { margin-top: 8px; }
+
+#enchantShelfInput {
+  display: block;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#enchantShelfInput::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent) var(--fill, 100%), #39352c var(--fill, 100%));
+}
+
+#enchantShelfInput::-webkit-slider-thumb {
+  width: 15px;
+  height: 15px;
+  margin-top: -5.5px;
+  border: 1px solid #1a1712;
+  border-radius: 50%;
+  background: #e5d8c1;
+  box-shadow: 0 0 0 3px rgba(201, 145, 85, 0.09);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#enchantShelfInput::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: #39352c;
+}
+
+#enchantShelfInput::-moz-range-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+#enchantShelfInput::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #1a1712;
+  border-radius: 50%;
+  background: #e5d8c1;
+}
+
+#enchantShelfInput:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px rgba(201, 145, 85, 0.25);
+}
+
+.enchant-range-scale {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1px;
+  font-family: var(--ui);
+  font-size: 6.8px;
+  letter-spacing: 0.04em;
+  color: var(--cream-faint);
+}
+
+.enchant-offers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.enchant-offer {
+  min-width: 0;
+  padding: 9px 10px 8px;
+  border: 1px solid rgba(178, 163, 137, 0.18);
+  border-radius: 4px;
+  background: rgba(238, 227, 207, 0.018);
+  color: var(--cream-dim);
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.13s ease, background 0.13s ease, color 0.13s ease;
+}
+
+.enchant-offer:hover {
+  border-color: rgba(169, 154, 200, 0.34);
+  background: rgba(169, 154, 200, 0.055);
+}
+
+.enchant-offer.is-on {
+  border-color: rgba(169, 154, 200, 0.63);
+  background: rgba(169, 154, 200, 0.1);
+  color: var(--cream);
+  box-shadow: inset 0 0 0 1px rgba(169, 154, 200, 0.08);
+}
+
+.enchant-offer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  font-family: var(--ui);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream-faint);
+}
+
+.enchant-offer.is-on .enchant-offer-top { color: var(--arcane); }
+
+.enchant-offer-lapis { color: var(--accent); letter-spacing: 0; }
+
+.enchant-offer-level {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--ui);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  color: var(--cream);
+  font-variant-numeric: tabular-nums;
+}
+
+.enchant-offer-foot {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--ui);
+  font-size: 6.8px;
+  line-height: 1.4;
+  letter-spacing: 0.015em;
+  color: var(--cream-faint);
+}
+
+.enchant-odds-block {
+  padding: 16px 0 15px;
+}
+
+.enchant-odds-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.enchant-odds-sub {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--ui);
+  font-size: 7.3px;
+  letter-spacing: 0.025em;
+  color: var(--cream-faint);
+}
+
+.enchant-odds-level {
+  flex: none;
+  padding: 3px 6px;
+  border: 1px solid rgba(169, 154, 200, 0.3);
+  border-radius: 2px;
+  background: rgba(169, 154, 200, 0.075);
+  font-family: var(--ui);
+  font-size: 7.5px;
+  letter-spacing: 0.03em;
+  color: var(--arcane);
+  white-space: nowrap;
+}
+
+.enchant-odds {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 12px;
+}
+
+.enchant-odd {
+  display: grid;
+  grid-template-columns: 102px 24px minmax(40px, 1fr) 34px;
+  align-items: center;
+  gap: 7px;
+  min-height: 17px;
+}
+
+.enchant-odd-name {
+  overflow: hidden;
+  font-family: var(--text);
+  font-size: 9.2px;
+  font-weight: 500;
+  color: var(--cream-dim);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.enchant-odd-tier {
+  font-family: var(--ui);
+  font-size: 7.2px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--arcane);
+}
+
+.enchant-odd-bar {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #322e26;
+}
+
+.enchant-odd-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7d6a99, var(--arcane));
+}
+
+.enchant-odd-pct {
+  font-family: var(--ui);
+  font-size: 8px;
+  text-align: right;
+  color: var(--cream-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.enchant-empty {
+  padding: 11px 12px;
+  border: 1px dashed rgba(178, 163, 137, 0.18);
+  border-radius: 3px;
+  font-family: var(--ui);
+  font-size: 8px;
+  line-height: 1.6;
+  color: var(--cream-faint);
+}
+
+.enchant-note {
+  margin: 12px 0 0;
+  font-family: var(--text);
+  font-size: 7.5px;
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+  color: var(--cream-faint);
+}
+
 /* ------------------------------------------------------------ responsive */
 
+@media (max-width: 1000px) {
+  .enchant-layout { grid-template-columns: 1fr; gap: 20px; }
+  .enchant-intro { padding-top: 0; }
+  .enchant-intro h1 { max-width: none; font-size: clamp(38px, 7vw, 52px); }
+  .enchant-lede { max-width: 520px; }
+  .enchant-scene { max-width: 520px; height: 210px; }
+  .enchant-caption { max-width: 520px; }
+}
+
 @media (max-width: 900px) {
-  .key { width: 348px; }
+  .key { width: 360px; }
   .hud-seed { left: 10px; top: 10px; }
   .hud-readout { right: 10px; top: 10px; }
   .tools { top: 10px; }
@@ -846,6 +1593,7 @@ svg#root { background: var(--bg); }
   .scale { right: 10px; bottom: 10px; }
   .key { left: 10px; bottom: 10px; }
   .hint { top: 54px; }
+  .enchant-shell { padding: 24px 28px 36px; }
 }
 
 @media (max-width: 680px) {
@@ -854,9 +1602,55 @@ svg#root { background: var(--bg); }
   .home-bottom { left: 16px; right: 16px; bottom: 14px; font-size: 7px; }
   .home-bottom span:first-child { display: none; }
   .home-bottom { justify-content: flex-end; }
+  .home-feature {
+    right: 16px;
+    bottom: 37px;
+    height: 29px;
+    padding: 0 8px 0 7px;
+    gap: 6px;
+    font-size: 7.1px;
+    letter-spacing: 0.1em;
+  }
+  .home-feature svg { width: 13px; height: 13px; }
+  .home-feature-arrow { font-size: 11px; }
   .seed-form { padding: 13px 13px 12px; }
   #seedInput { height: 46px; font-size: 17px; }
   .go { height: 40px; font-size: 9.5px; }
+
+  .enchant-shell { padding: 16px 16px 28px; }
+  .enchant-top { padding-bottom: 18px; }
+  .enchant-tag { font-size: 7px; letter-spacing: 0.08em; gap: 6px; }
+  .enchant-intro h1 { font-size: 36px; }
+  .enchant-lede { margin-top: 12px; font-size: 12px; }
+  .enchant-kicker { margin-bottom: 10px; }
+  .enchant-scene { height: 176px; margin-top: 16px; }
+  .enchant-shelves {
+    top: 12px;
+    grid-template-columns: repeat(5, 30px);
+    gap: 4px;
+  }
+  .enchant-shelves i { width: 30px; height: 24px; }
+  .enchant-shelves i::before { left: 4px; right: 4px; top: 4px; bottom: 9px; }
+  .enchant-shelves i::after { left: 3px; right: 3px; bottom: 4px; height: 3px; }
+  .enchant-table { width: 64px; height: 64px; bottom: 7px; }
+  .enchant-caption { margin-top: 10px; font-size: 7.3px; }
+  .enchant-work { padding: 2px 14px 0; border-radius: 6px; }
+  .enchant-block { padding: 15px 0; }
+  .enchant-meta { font-size: 7px; }
+  .enchant-items { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin-top: 10px; }
+  .enchant-item { height: 52px; font-size: 7.8px; }
+  .enchant-item svg { width: 20px; height: 20px; }
+  .enchant-materials { gap: 4px; }
+  .enchant-material { height: 23px; padding: 0 6px; font-size: 7.1px; }
+  .enchant-offers { gap: 5px; }
+  .enchant-offer { padding: 8px 7px 7px; }
+  .enchant-offer-level { font-size: 20px; }
+  .enchant-offer-foot { font-size: 6.5px; }
+  .enchant-odds-block { padding-top: 14px; }
+  .enchant-odd { grid-template-columns: 88px 20px minmax(30px, 1fr) 30px; gap: 5px; }
+  .enchant-odd-name { font-size: 8.4px; }
+  .enchant-odd-pct { font-size: 7.5px; }
+  .enchant-note { font-size: 7.2px; }
 
   .tools { top: 54px; padding: 2px; gap: 2px; }
   .tool { height: 27px; padding: 0 7px; font-size: 7.2px; gap: 5px; }
@@ -872,13 +1666,13 @@ svg#root { background: var(--bg); }
   .measure-total { font-size: 22px; }
   .measure-time { font-size: 8px; }
 
-  .key { left: 10px; bottom: 10px; width: calc(100vw - 20px); max-width: 372px; padding: 9px 10px 8px; }
+  .key { left: 10px; bottom: 10px; width: calc(100vw - 20px); max-width: 380px; padding: 9px 10px 8px; }
   .key-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 5px; }
-  .key-item { height: 20px; font-size: 7.6px; gap: 4px; }
+  .key-item { height: 21px; font-size: 8px; gap: 4px; }
   .key-icon, .key-icon canvas { width: 16px; height: 16px; }
   .biome-grid { column-gap: 5px; row-gap: 2px; }
-  .biome-key { font-size: 7.2px; gap: 4px; }
-  .key-note { font-size: 7px; margin-top: 6px; }
+  .biome-key { font-size: 7.5px; gap: 4px; }
+  .key-note { font-size: 7.2px; margin-top: 6px; }
   .key-rule { margin: 6px 0 5px; }
 
   .scale { display: none; }
@@ -889,14 +1683,24 @@ svg#root { background: var(--bg); }
   .home-top .tag { font-size: 7px; letter-spacing: 0.08em; gap: 5px; }
   .brand { font-size: 10px; gap: 7px; }
   .brand svg { width: 13px; height: 13px; }
+  .enchant-intro h1 { font-size: 33px; }
+  .enchant-items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .enchant-odd { grid-template-columns: 82px 18px minmax(24px, 1fr) 29px; gap: 4px; }
+  .enchant-odd-name { font-size: 8px; }
+  .enchant-odd-tier { font-size: 6.8px; }
 }
 
 @media (max-width: 360px) {
   .key-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .key-item { font-size: 7.4px; }
+  .enchant-shell { padding-left: 12px; padding-right: 12px; }
+  .enchant-work { padding-left: 11px; padding-right: 11px; }
+  .enchant-offer { padding-left: 6px; padding-right: 6px; }
+  .enchant-offer-level { font-size: 18px; }
 }
 
 @media (max-height: 640px) {
+  .home-feature { bottom: 32px; height: 27px; }
   .seed-form { padding: 11px 13px 10px; }
   .seed-card-head { margin-bottom: 6px; }
   #seedInput { height: 42px; font-size: 16px; }
@@ -931,7 +1735,7 @@ svg#root { background: var(--bg); }
       <section class="home" id="home">
         <div class="home-top">
           <span class="brand">
-            <svg viewBox="0 0 16 16" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true">
               <rect x="1" y="1" width="6" height="6"/>
               <rect x="9" y="1" width="6" height="6" class="hot"/>
               <rect x="1" y="9" width="6" height="6"/>
@@ -968,6 +1772,107 @@ svg#root { background: var(--bg); }
           <span>Surface generation · every seed is its own world</span>
           <span>Single file · fully offline</span>
         </div>
+
+        <button class="home-feature" id="enchantBtn" type="button" title="Open the enchanting table calculator">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M2.4 5.1 8 2.5l5.6 2.6L8 7.7z"/>
+            <path d="M2.4 5.1v5.8L8 13.5V7.7M13.6 5.1v5.8L8 13.5"/>
+            <path d="m8 4.3 1.5 1L8 6.3 6.5 5.3z"/>
+          </svg>
+          <span>Enchanting table</span>
+          <span class="home-feature-arrow" aria-hidden="true">→</span>
+        </button>
+      </section>
+
+      <section class="enchant" id="enchant" hidden="hidden" aria-labelledby="enchantTitle" tabindex="-1">
+        <div class="enchant-shell">
+          <header class="enchant-top">
+            <button class="enchant-back" id="enchantBack" type="button" aria-label="Back to seed entry">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4"/></svg>
+              <span>Seedmap</span>
+            </button>
+            <span class="enchant-tag"><i aria-hidden="true"></i>Java 1.21.4 · enchanting table</span>
+          </header>
+
+          <div class="enchant-layout">
+            <section class="enchant-intro">
+              <p class="enchant-kicker">Tool 02</p>
+              <h1 id="enchantTitle">Enchanting table</h1>
+              <p class="enchant-lede">Set the shelves, pick the gear, and read the three offers before you spend a level.</p>
+
+              <div class="enchant-scene" aria-hidden="true">
+                <div class="enchant-shelves" id="enchantShelves"></div>
+                <div class="enchant-table">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                    <path d="M4 21 32 8 60 21 32 34z" fill="#3a2a20" stroke="#6d543a" stroke-width="1"/>
+                    <path d="M4 21 32 34v4L4 25z" fill="#241a13" stroke="#4b3726" stroke-width="1"/>
+                    <path d="M60 21 32 34v4l28-13z" fill="#17110d" stroke="#4b3726" stroke-width="1"/>
+                    <path d="M10 24 14 26v28l-4-2z" fill="#2a1d15" stroke="#4b3726" stroke-width="1"/>
+                    <path d="M54 24 50 26v28l4-2z" fill="#1a120d" stroke="#4b3726" stroke-width="1"/>
+                    <path d="M30 35 34 37v22l-4-2z" fill="#221710" stroke="#4b3726" stroke-width="1"/>
+                    <path d="M10 49 32 58l22-9v4L32 62 10 53z" fill="#1b120c" stroke="#3c2b1d" stroke-width="1"/>
+                    <path d="M22 19 31.5 23v5L22 24z" fill="#8e4238" stroke="#c9ae8d" stroke-width="0.7"/>
+                    <path d="M42 19 32.5 23v5L42 24z" fill="#8e4238" stroke="#c9ae8d" stroke-width="0.7"/>
+                    <path d="M32.5 23v5M24 20.5 31 23.7M40 20.5 33 23.7" fill="none" stroke="#e2d2b8" stroke-width="0.7"/>
+                    <path d="M32 43 35.5 46.5 32 50 28.5 46.5z" fill="#6e5b96"/>
+                    <path d="M32 45.2 33.7 46.5 32 47.8 30.3 46.5z" fill="#cab9e6"/>
+                    <path d="M4 18 7 21 4 24 1 21z" fill="#629e98"/>
+                    <path d="M60 18 63 21 60 24 57 21z" fill="#629e98"/>
+                    <path d="M32 31 35 34 32 37 29 34z" fill="#629e98"/>
+                    <path d="M32 5 35 8 32 11 29 8z" fill="#629e98"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="enchant-caption">
+                <span id="enchantShelfHint">At the cap — the bottom offer is always level 30.</span>
+                <span>Every level spent rerolls all three offers.</span>
+              </div>
+            </section>
+
+            <section class="enchant-work" aria-label="Enchantment calculator">
+              <div class="enchant-block">
+                <div class="enchant-block-head">
+                  <span class="enchant-label">Gear</span>
+                  <span class="enchant-meta" id="enchantGearMeta">Diamond sword · enchantability 10</span>
+                </div>
+                <div class="enchant-items" id="enchantItems" role="group" aria-label="Choose gear"></div>
+                <div class="enchant-materials" id="enchantMaterials" role="group" aria-label="Choose material"></div>
+              </div>
+
+              <div class="enchant-block enchant-shelf-block">
+                <div class="enchant-block-head">
+                  <label class="enchant-label" for="enchantShelfInput">Bookshelves</label>
+                  <span class="enchant-power"><b id="enchantShelfCount">15</b><span> / 15</span></span>
+                </div>
+                <div class="enchant-range-wrap">
+                  <input id="enchantShelfInput" type="range" min="0" max="15" step="1" value="15"/>
+                  <div class="enchant-range-scale" aria-hidden="true"><span>0</span><span>5</span><span>10</span><span>15</span></div>
+                </div>
+              </div>
+
+              <div class="enchant-block">
+                <div class="enchant-block-head">
+                  <span class="enchant-label">Offers</span>
+                  <span class="enchant-meta">levels required · lapis spent</span>
+                </div>
+                <div class="enchant-offers" id="enchantOffers" role="group" aria-label="Enchanting table offers"></div>
+              </div>
+
+              <div class="enchant-odds-block">
+                <div class="enchant-odds-head">
+                  <div>
+                    <span class="enchant-label" id="enchantOddsTitle">Bottom offer</span>
+                    <span class="enchant-odds-sub">chance to appear in one roll</span>
+                  </div>
+                  <span class="enchant-odds-level" id="enchantOddsLevel">level 30</span>
+                </div>
+                <div class="enchant-odds" id="enchantOdds" role="list"></div>
+                <p class="enchant-note">Chances assume a random table offer, not a known seed. The shown level is a requirement; using a slot spends 1–3 levels. Treasure enchantments never roll here.</p>
+              </div>
+            </section>
+          </div>
+        </div>
       </section>
 
       <section class="map-ui" id="mapUi" hidden="hidden">
@@ -987,17 +1892,17 @@ svg#root { background: var(--bg); }
         <div class="tools" id="tools" role="group" aria-label="Map tools">
           <div class="seg" role="group" aria-label="View">
             <button class="tool is-on" id="mapBtn" type="button" aria-pressed="true" title="Top-down map">
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.4 4.1 6 2.7l4 1.4 3.6-1.4v9.2L10 13.3l-4-1.4-3.6 1.4z"/><path d="M6 2.7v9.2M10 4.1v9.2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.4 4.1 6 2.7l4 1.4 3.6-1.4v9.2L10 13.3l-4-1.4-3.6 1.4z"/><path d="M6 2.7v9.2M10 4.1v9.2"/></svg>
               <span>Map</span>
             </button>
             <button class="tool" id="dioramaBtn" type="button" aria-pressed="false" title="Angled 3D diorama; elevation is illustrative">
-              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.9 14 5.2v5.6L8 14.1 2 10.8V5.2z"/><path d="M2 5.2 8 8.5l6-3.3M8 8.5v5.6"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.9 14 5.2v5.6L8 14.1 2 10.8V5.2z"/><path d="M2 5.2 8 8.5l6-3.3M8 8.5v5.6"/></svg>
               <span>Diorama</span>
             </button>
           </div>
           <span class="tool-divider" aria-hidden="true"></span>
           <button class="tool" id="measureBtn" type="button" aria-pressed="false" title="Measure a route">
-            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.6 10.7 10.7 2.6l2.7 2.7-8.1 8.1z"/><path d="M4.7 9.3l1.1 1.1M6.8 7.2l1.1 1.1M8.9 5.1l1.1 1.1"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.6 10.7 10.7 2.6l2.7 2.7-8.1 8.1z"/><path d="M4.7 9.3l1.1 1.1M6.8 7.2l1.1 1.1M8.9 5.1l1.1 1.1"/></svg>
             <span>Measure</span>
           </button>
         </div>
@@ -2131,11 +3036,430 @@ globalThis.BIOME_TREE = {
   };
 })();
 
+/* Seedmap enchanting table — pure Java 1.21.4 model, no DOM. */
+(function (global) {
+  "use strict";
+
+  // Modified-enchantment-level ranges per tier, the weights used by the table
+  // selection, and the conflicts that remove an enchantment after another is
+  // chosen. Treasure enchantments are deliberately absent: the table cannot
+  // produce them. Ranges and weights follow the Java 1.14+ algorithm, which is
+  // still the 1.21.4 table algorithm.
+  const ENCHANTMENTS = {
+    protection: {
+      label: "Protection", weight: 10, conflicts: ["fire_protection", "blast_protection", "projectile_protection"],
+      tiers: [[1, 12], [12, 23], [23, 34], [34, 45]],
+    },
+    fire_protection: {
+      label: "Fire Protection", weight: 5, conflicts: ["protection", "blast_protection", "projectile_protection"],
+      tiers: [[10, 18], [18, 26], [26, 34], [34, 42]],
+    },
+    feather_falling: {
+      label: "Feather Falling", weight: 5, conflicts: [],
+      tiers: [[5, 11], [11, 17], [17, 23], [23, 29]],
+    },
+    blast_protection: {
+      label: "Blast Protection", weight: 2, conflicts: ["protection", "fire_protection", "projectile_protection"],
+      tiers: [[5, 13], [13, 21], [21, 29], [29, 37]],
+    },
+    projectile_protection: {
+      label: "Projectile Protection", weight: 5, conflicts: ["protection", "fire_protection", "blast_protection"],
+      tiers: [[3, 9], [9, 15], [15, 21], [21, 27]],
+    },
+    respiration: {
+      label: "Respiration", weight: 2, conflicts: [],
+      tiers: [[10, 40], [20, 50], [30, 60]],
+    },
+    aqua_affinity: {
+      label: "Aqua Affinity", weight: 2, conflicts: [],
+      tiers: [[1, 41]],
+    },
+    thorns: {
+      label: "Thorns", weight: 1, conflicts: [],
+      tiers: [[10, 60], [30, 70], [50, 80]],
+    },
+    depth_strider: {
+      label: "Depth Strider", weight: 2, conflicts: [],
+      tiers: [[10, 25], [20, 35], [30, 45]],
+    },
+    sharpness: {
+      label: "Sharpness", weight: 10, conflicts: ["smite", "bane_of_arthropods"],
+      tiers: [[1, 21], [12, 32], [23, 43], [34, 54], [45, 65]],
+    },
+    smite: {
+      label: "Smite", weight: 5, conflicts: ["sharpness", "bane_of_arthropods"],
+      tiers: [[5, 25], [13, 33], [21, 41], [29, 49], [37, 57]],
+    },
+    bane_of_arthropods: {
+      label: "Bane of Arthropods", weight: 5, conflicts: ["sharpness", "smite"],
+      tiers: [[5, 25], [13, 33], [21, 41], [29, 49], [37, 57]],
+    },
+    knockback: {
+      label: "Knockback", weight: 5, conflicts: [],
+      tiers: [[5, 55], [25, 75]],
+    },
+    fire_aspect: {
+      label: "Fire Aspect", weight: 2, conflicts: [],
+      tiers: [[10, 60], [30, 80]],
+    },
+    looting: {
+      label: "Looting", weight: 2, conflicts: ["silk_touch"],
+      tiers: [[15, 65], [24, 74], [33, 83]],
+    },
+    sweeping_edge: {
+      label: "Sweeping Edge", weight: 2, conflicts: [],
+      tiers: [[5, 20], [14, 29], [23, 38]],
+    },
+    efficiency: {
+      label: "Efficiency", weight: 10, conflicts: [],
+      tiers: [[1, 51], [11, 61], [21, 71], [31, 81], [41, 91]],
+    },
+    silk_touch: {
+      label: "Silk Touch", weight: 1, conflicts: ["fortune", "looting"],
+      tiers: [[15, 65]],
+    },
+    fortune: {
+      label: "Fortune", weight: 2, conflicts: ["silk_touch"],
+      tiers: [[15, 65], [24, 74], [33, 83]],
+    },
+    power: {
+      label: "Power", weight: 10, conflicts: [],
+      tiers: [[1, 16], [11, 26], [21, 36], [31, 46], [41, 56]],
+    },
+    punch: {
+      label: "Punch", weight: 2, conflicts: [],
+      tiers: [[12, 37], [32, 57]],
+    },
+    flame: {
+      label: "Flame", weight: 2, conflicts: [],
+      tiers: [[20, 50]],
+    },
+    infinity: {
+      label: "Infinity", weight: 1, conflicts: [],
+      tiers: [[20, 50]],
+    },
+    luck_of_the_sea: {
+      label: "Luck of the Sea", weight: 2, conflicts: ["silk_touch"],
+      tiers: [[15, 65], [24, 74], [33, 83]],
+    },
+    lure: {
+      label: "Lure", weight: 2, conflicts: [],
+      tiers: [[15, 65], [24, 74], [33, 83]],
+    },
+    unbreaking: {
+      label: "Unbreaking", weight: 5, conflicts: [],
+      tiers: [[5, 55], [13, 63], [21, 71]],
+    },
+    channeling: {
+      label: "Channeling", weight: 1, conflicts: ["riptide"],
+      tiers: [[25, 50]],
+    },
+    impaling: {
+      label: "Impaling", weight: 2, conflicts: [],
+      tiers: [[1, 21], [9, 29], [17, 37], [25, 45], [33, 53]],
+    },
+    loyalty: {
+      label: "Loyalty", weight: 5, conflicts: ["riptide"],
+      tiers: [[12, 50], [19, 50], [26, 50]],
+    },
+    riptide: {
+      label: "Riptide", weight: 2, conflicts: ["loyalty", "channeling"],
+      tiers: [[17, 50], [24, 50], [31, 50]],
+    },
+    multishot: {
+      label: "Multishot", weight: 2, conflicts: ["piercing"],
+      tiers: [[20, 50]],
+    },
+    piercing: {
+      label: "Piercing", weight: 10, conflicts: ["multishot"],
+      tiers: [[1, 50], [11, 50], [21, 50], [31, 50]],
+    },
+    quick_charge: {
+      label: "Quick Charge", weight: 5, conflicts: [],
+      tiers: [[12, 50], [32, 50], [52, 50]],
+    },
+  };
+
+  // `kind` chooses the material table and whether material affects the roll.
+  // Ranged gear, tridents, rods and books all use enchantability 1, matching
+  // the game.
+  const ITEMS = {
+    sword: {
+      label: "Sword", kind: "tool",
+      pool: ["sharpness", "smite", "bane_of_arthropods", "knockback", "fire_aspect", "looting", "sweeping_edge", "unbreaking"],
+    },
+    pickaxe: {
+      label: "Pickaxe", kind: "tool",
+      pool: ["efficiency", "silk_touch", "fortune", "unbreaking"],
+    },
+    axe: {
+      label: "Axe", kind: "tool",
+      pool: ["sharpness", "smite", "bane_of_arthropods", "efficiency", "silk_touch", "fortune", "unbreaking"],
+    },
+    shovel: {
+      label: "Shovel", kind: "tool",
+      pool: ["efficiency", "silk_touch", "fortune", "unbreaking"],
+    },
+    helmet: {
+      label: "Helmet", kind: "armor",
+      pool: ["protection", "fire_protection", "blast_protection", "projectile_protection", "respiration", "aqua_affinity", "thorns", "unbreaking"],
+    },
+    chestplate: {
+      label: "Chestplate", kind: "armor",
+      pool: ["protection", "fire_protection", "blast_protection", "projectile_protection", "thorns", "unbreaking"],
+    },
+    leggings: {
+      label: "Leggings", kind: "armor",
+      pool: ["protection", "fire_protection", "blast_protection", "projectile_protection", "thorns", "unbreaking"],
+    },
+    boots: {
+      label: "Boots", kind: "armor",
+      pool: ["protection", "fire_protection", "blast_protection", "projectile_protection", "feather_falling", "depth_strider", "thorns", "unbreaking"],
+    },
+    bow: {
+      label: "Bow", kind: "other",
+      pool: ["power", "punch", "flame", "infinity", "unbreaking"],
+    },
+    crossbow: {
+      label: "Crossbow", kind: "other",
+      pool: ["multishot", "piercing", "quick_charge", "unbreaking"],
+    },
+    trident: {
+      label: "Trident", kind: "other",
+      pool: ["loyalty", "impaling", "riptide", "channeling", "unbreaking"],
+    },
+    fishing_rod: {
+      label: "Fishing rod", kind: "other",
+      pool: ["luck_of_the_sea", "lure", "unbreaking"],
+    },
+  };
+
+  const MATERIALS = {
+    tool: [
+      { id: "wood", label: "Wood", color: "#9a7446", enchantability: 15 },
+      { id: "stone", label: "Stone", color: "#8b908d", enchantability: 5 },
+      { id: "iron", label: "Iron", color: "#b2b8b6", enchantability: 14 },
+      { id: "gold", label: "Gold", color: "#c9a24a", enchantability: 22 },
+      { id: "diamond", label: "Diamond", color: "#77b6b0", enchantability: 10 },
+      { id: "netherite", label: "Netherite", color: "#75646a", enchantability: 15 },
+    ],
+    armor: [
+      { id: "leather", label: "Leather", color: "#a8764a", enchantability: 15 },
+      { id: "chain", label: "Chain", color: "#9ca5a5", enchantability: 12 },
+      { id: "iron", label: "Iron", color: "#b2b8b6", enchantability: 9 },
+      { id: "gold", label: "Gold", color: "#c9a24a", enchantability: 25 },
+      { id: "diamond", label: "Diamond", color: "#77b6b0", enchantability: 10 },
+      { id: "netherite", label: "Netherite", color: "#75646a", enchantability: 15 },
+    ],
+  };
+
+  const SLOT_NAMES = ["Top", "Middle", "Bottom"];
+  const SLOT_COSTS = [1, 2, 3];
+  const cache = new Map();
+
+  function clamp(v, lo, hi) {
+    return v < lo ? lo : v > hi ? hi : v;
+  }
+
+  // Triangular CDF for u1 + u2, used to integrate the 0.85..1.15 modifier
+  // exactly instead of rounding a sampled float.
+  function triangularCdf(s) {
+    if (s <= 0) return 0;
+    if (s >= 2) return 1;
+    return s <= 1 ? (s * s) / 2 : 1 - ((2 - s) * (2 - s)) / 2;
+  }
+
+  function itemMaterials(itemId) {
+    const item = ITEMS[itemId];
+    if (!item || item.kind === "other") return [];
+    return MATERIALS[item.kind];
+  }
+
+  function enchantability(itemId, materialId) {
+    const item = ITEMS[itemId];
+    if (!item) return 1;
+    if (item.kind === "other") return 1;
+    const list = MATERIALS[item.kind];
+    const material = list.find((m) => m.id === materialId) || list[0];
+    return material ? material.enchantability : 1;
+  }
+
+  // The three slots use the vanilla base roll and its slot transforms.
+  function offerDistribution(shelves, slot) {
+    const b = clamp(Math.round(shelves), 0, 15);
+    const out = new Map();
+    let total = 0;
+    for (let r1 = 1; r1 <= 8; r1++) {
+      for (let r2 = 0; r2 <= b; r2++) {
+        const base = r1 + Math.floor(b / 2) + r2;
+        let level;
+        if (slot === 0) level = Math.max(Math.floor(base / 3), 1);
+        else if (slot === 1) level = Math.floor((base * 2) / 3) + 1;
+        else level = Math.max(base, b * 2);
+        out.set(level, (out.get(level) || 0) + 1);
+        total++;
+      }
+    }
+    for (const [level, n] of out) out.set(level, n / total);
+    return out;
+  }
+
+  function offers(shelves) {
+    const b = clamp(Math.round(shelves), 0, 15);
+    return SLOT_NAMES.map((name, slot) => {
+      const levels = offerDistribution(b, slot);
+      const values = Array.from(levels.keys()).sort((a, c) => a - c);
+      return {
+        slot,
+        name,
+        min: values[0],
+        max: values[values.length - 1],
+        levels: values,
+        probability: levels,
+        lapis: SLOT_COSTS[slot],
+        levelsSpent: SLOT_COSTS[slot],
+      };
+    });
+  }
+
+  // Enchantability adds two triangular rolls, then the 0.85..1.15 multiplier
+  // is integrated over each possible rounded result. This is the exact
+  // distribution of the first step of the vanilla algorithm.
+  function modifiedDistribution(level, enchantabilityValue) {
+    const n = Math.floor(enchantabilityValue / 4) + 1;
+    const out = new Map();
+    for (let a = 0; a < n; a++) {
+      for (let c = 0; c < n; c++) {
+        const k = level + 1 + a + c;
+        const p = 1 / (n * n);
+        const lo = Math.ceil(k * 0.85);
+        const hi = Math.floor(k * 1.15);
+        for (let v = lo; v <= hi; v++) {
+          const sLo = ((v - 0.5) / k - 0.85) / 0.15;
+          const sHi = ((v + 0.5) / k - 0.85) / 0.15;
+          const q = triangularCdf(Math.min(2, sHi)) - triangularCdf(Math.max(0, sLo));
+          if (q > 0) out.set(v, (out.get(v) || 0) + p * q);
+        }
+      }
+    }
+    let sum = 0;
+    for (const p of out.values()) sum += p;
+    for (const [v, p] of out) out.set(v, p / (sum || 1));
+    return out;
+  }
+
+  function tierAt(enchantmentId, modifiedLevel) {
+    const tiers = ENCHANTMENTS[enchantmentId].tiers;
+    let best = 0;
+    for (let i = 0; i < tiers.length; i++) {
+      if (modifiedLevel >= tiers[i][0] && modifiedLevel <= tiers[i][1]) best = i + 1;
+    }
+    return best;
+  }
+
+  function availableAt(itemId, modifiedLevel) {
+    return ITEMS[itemId].pool
+      .map((id) => ({ id, level: tierAt(id, modifiedLevel), weight: ENCHANTMENTS[id].weight }))
+      .filter((entry) => entry.level > 0);
+  }
+
+  // Walk every possible pick sequence. The first pick is guaranteed; each
+  // further pick continues with probability (level + 1) / 50, halves the
+  // level for the next roll, and removes the chosen enchantment and its
+  // conflicts. The result is exact for a single table roll.
+  function outcomeAt(itemId, modifiedLevel) {
+    const key = itemId + ":" + modifiedLevel;
+    const hit = cache.get(key);
+    if (hit) return hit;
+
+    const pAppear = Object.create(null);
+    const maxTier = Object.create(null);
+
+    function walk(list, level, probability) {
+      if (!list.length) return;
+      let total = 0;
+      for (const entry of list) total += entry.weight;
+      for (const entry of list) {
+        const p = probability * (entry.weight / total);
+        pAppear[entry.id] = (pAppear[entry.id] || 0) + p;
+        if (entry.level > (maxTier[entry.id] || 0)) maxTier[entry.id] = entry.level;
+        const nextLevel = Math.floor(level / 2);
+        const continueChance = clamp((level + 1) / 50, 0, 1);
+        if (continueChance > 0) {
+          const blocked = new Set([entry.id].concat(ENCHANTMENTS[entry.id].conflicts));
+          walk(list.filter((candidate) => !blocked.has(candidate.id)), nextLevel, p * continueChance);
+        }
+      }
+    }
+
+    walk(availableAt(itemId, modifiedLevel), modifiedLevel, 1);
+    const result = { pAppear, maxTier };
+    cache.set(key, result);
+    return result;
+  }
+
+  // Weighted odds for one slot across the random offer level. The result is
+  // the chance an enchantment appears anywhere in that roll, not a prediction
+  // of a particular seed.
+  function odds(itemId, materialId, shelves, slot) {
+    const key = [itemId, materialId, shelves, slot].join("|");
+    const hit = cache.get(key);
+    if (hit) return hit;
+
+    const levels = offerDistribution(shelves, slot);
+    const e = enchantability(itemId, materialId);
+    const pTotal = Object.create(null);
+    const tierMax = Object.create(null);
+
+    for (const [level, pLevel] of levels) {
+      for (const [modified, pModified] of modifiedDistribution(level, e)) {
+        const outcome = outcomeAt(itemId, modified);
+        const weight = pLevel * pModified;
+        for (const id in outcome.pAppear) {
+          pTotal[id] = (pTotal[id] || 0) + outcome.pAppear[id] * weight;
+        }
+        for (const id in outcome.maxTier) {
+          if (outcome.maxTier[id] > (tierMax[id] || 0)) tierMax[id] = outcome.maxTier[id];
+        }
+      }
+    }
+
+    const result = Object.keys(pTotal)
+      .filter((id) => pTotal[id] > 1e-9)
+      .map((id) => ({
+        id,
+        label: ENCHANTMENTS[id].label,
+        chance: clamp(pTotal[id], 0, 1),
+        maxLevel: tierMax[id] || 1,
+      }))
+      .sort((a, c) => c.chance - a.chance || a.label.localeCompare(c.label));
+
+    cache.set(key, result);
+    return result;
+  }
+
+  const API = {
+    ENCHANTMENTS,
+    ITEMS,
+    MATERIALS,
+    SLOT_NAMES,
+    SLOT_COSTS,
+    itemMaterials,
+    enchantability,
+    offers,
+    odds,
+  };
+
+  if (typeof module !== "undefined" && module.exports) module.exports = API;
+  if (global) global.SeedMapEnchant = API;
+})(typeof window !== "undefined" ? window : globalThis);
+
 /* Seedmap application — no dependencies, no network. */
 (function () {
   "use strict";
 
   const E = window.SeedMapEngine;
+  const ENCH = window.SeedMapEnchant;
   const XHTML = "http://www.w3.org/1999/xhtml";
   const SVGNS = "http://www.w3.org/2000/svg";
   const MIN_SCALE = 0.22;
@@ -2818,6 +4142,13 @@ globalThis.BIOME_TREE = {
     measure: { active: false, points: [] },
     dioramaTimer: 0,
     dioramaDirty: false,
+    enchantOpen: false,
+    enchantItem: "sword",
+    enchantMaterial: "diamond",
+    enchantShelves: 15,
+    enchantSlot: 2,
+    enchantTimer: 0,
+    enchantRaf: 0,
   };
 
   const tiles = new Map();
@@ -2876,6 +4207,20 @@ globalThis.BIOME_TREE = {
   let measureTotalEl = null;
   let measureTimeEl = null;
   let measureRouteEl = null;
+  let enchantEl = null;
+  let enchantBtn = null;
+  let enchantBack = null;
+  let enchantItemsEl = null;
+  let enchantMaterialsEl = null;
+  let enchantGearMetaEl = null;
+  let enchantShelfInput = null;
+  let enchantShelfCountEl = null;
+  let enchantShelfHint = null;
+  let enchantShelvesEl = null;
+  let enchantOffersEl = null;
+  let enchantOddsEl = null;
+  let enchantOddsTitleEl = null;
+  let enchantOddsLevelEl = null;
 
   /* ------------------------------------------------------------ dom utils */
 
@@ -3799,6 +5144,22 @@ globalThis.BIOME_TREE = {
     }
   }
 
+  // The top-down terrain is the one fully lit surface in an otherwise dark
+  // interface. A quiet veil over the tiles (drawn before the grid and the
+  // markers) settles it into the same palette without dimming any icon or
+  // label that sits on top.
+  function drawTerrainVeil() {
+    ctx.fillStyle = "rgba(13, 17, 15, 0.16)";
+    ctx.fillRect(0, 0, state.vw, state.vh);
+    const vignette = ctx.createRadialGradient(
+      state.vw / 2, state.vh / 2, Math.min(state.vw, state.vh) * 0.34,
+      state.vw / 2, state.vh / 2, Math.max(state.vw, state.vh) * 0.82);
+    vignette.addColorStop(0, "rgba(6, 9, 8, 0)");
+    vignette.addColorStop(1, "rgba(6, 9, 8, 0.26)");
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, state.vw, state.vh);
+  }
+
   // Human-readable coordinate intervals. The chosen step keeps labels at
   // least 100 px apart on desktop and 80 px on a phone at every zoom level.
   const GRID_STEPS = [
@@ -4081,26 +5442,26 @@ globalThis.BIOME_TREE = {
     if (y < 8) { y = my + R + 11; below = true; }
     x = clamp(x, 8, Math.max(8, state.vw - w - 8));
     ctx.save();
-    ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetY = 3;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 4;
     roundRect(x, y, w, h, 3);
-    ctx.fillStyle = "#f1e6ce";
+    ctx.fillStyle = "#1b1c17";
     ctx.fill();
     ctx.restore();
     roundRect(x, y, w, h, 3);
-    ctx.strokeStyle = "#241c13";
-    ctx.lineWidth = 1.4;
+    ctx.strokeStyle = "rgba(178, 163, 137, 0.32)";
+    ctx.lineWidth = 1.2;
     ctx.stroke();
     ctx.textBaseline = "alphabetic";
     const icon = iconCanvas(m.type, 2);
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(icon, x + 8, y + 9, 16, 16);
     ctx.imageSmoothingEnabled = true;
-    ctx.fillStyle = "#241c13";
+    ctx.fillStyle = "#eee3cf";
     ctx.font = "600 11.5px " + FONT_SANS;
     ctx.fillText(name, x + 31, y + 17);
-    ctx.fillStyle = "#a4561d";
+    ctx.fillStyle = "#c99155";
     ctx.font = "500 9.5px " + FONT_MONO;
     ctx.fillText(coords, x + 31, y + 30);
     const tipY = below ? y : y + h;
@@ -4109,9 +5470,9 @@ globalThis.BIOME_TREE = {
     ctx.lineTo(mx + 5, tipY);
     ctx.lineTo(mx, below ? y - 5 : y + h + 5);
     ctx.closePath();
-    ctx.fillStyle = "#f1e6ce";
+    ctx.fillStyle = "#1b1c17";
     ctx.fill();
-    ctx.strokeStyle = "#241c13";
+    ctx.strokeStyle = "rgba(178, 163, 137, 0.32)";
     ctx.lineWidth = 1.2;
     ctx.stroke();
   }
@@ -4121,6 +5482,7 @@ globalThis.BIOME_TREE = {
     ctx.fillRect(0, 0, state.vw, state.vh);
     drawDotGrid();
     drawCachedTiles();
+    drawTerrainVeil();
     drawGraticule();
     projectMarkers();
     updateHoverMarker();
@@ -4881,6 +6243,13 @@ globalThis.BIOME_TREE = {
   }
 
   function onKeyDown(e) {
+    if (state.enchantOpen) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeEnchant();
+      }
+      return;
+    }
     if (state.mapShown) {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -4924,6 +6293,313 @@ globalThis.BIOME_TREE = {
         scheduleDiorama();
       }
     }
+  }
+
+  /* ------------------------------------------------------------ enchanting */
+
+  // Small line glyphs for the gear picker. They share one 24x24 optical box
+  // and a single stroke weight, so the row reads as a set rather than a pile
+  // of mismatched clip art.
+  const ENCHANT_ICONS = {
+    sword: [
+      "M21 3v5.5L10.5 19 8 16.5 18.5 6z",
+      "M6.5 14.5 12 20",
+      "M7 17 3 21",
+      "M2.4 20.4 3.6 21.6",
+    ],
+    pickaxe: [
+      "M3.5 9.5C6.5 4.8 15.5 4.2 20.5 8.5",
+      "M3.5 9.5 2.8 11.4M20.5 8.5 21.2 10.4",
+      "M12 8 8.5 21",
+    ],
+    axe: [
+      "M13 4c4.5 0 8 3.5 7.5 8.5L13.5 11z",
+      "M13.5 7 7.5 21",
+      "M19.4 6.6 20.5 12.5",
+    ],
+    shovel: [
+      "M10 3h4v3c2.7 1.4 3.6 4.3 2 6.5L12 16 8 12.5C6.4 10.3 7.3 7.4 10 6z",
+      "M12 16v5",
+    ],
+    helmet: [
+      "M4.5 13C4.5 7.7 7.6 4.5 12 4.5s7.5 3.2 7.5 8.5v3H15v-3.8H9V16H4.5z",
+      "M9 16h6",
+    ],
+    chestplate: [
+      "M8.5 4.5 12 3l3.5 1.5L20.5 7l-1.8 5.3-2.7-1V21H8v-9.7l-2.7 1L3.5 7z",
+      "M9 4.5c.7 1.6 5.3 1.6 6 0",
+    ],
+    leggings: [
+      "M7 3h10l1 18h-4.5L12 10.5 10.5 21H6z",
+      "M7 6.5h10",
+    ],
+    boots: [
+      "M6 4h4v9l3 3v4H4v-5l2-3z",
+      "M4 19.5h9",
+    ],
+    bow: [
+      "M8 4c8 2.6 8 13.4 0 16",
+      "M8 4v16",
+      "M4 12h10M11.5 9.5 14 12l-2.5 2.5",
+    ],
+    crossbow: [
+      "M8 5c-5 2.4-5 11.6 0 14",
+      "M8 5v14M5 12h15",
+      "M13 12v4",
+      "M10 9.5h7M15 8l2.5 1.5L15 11",
+    ],
+    trident: [
+      "M12 3v18",
+      "M7 4v5c0 2.2 2 3.5 5 3.5s5-1.3 5-3.5V4",
+      "M7 4v2.5M17 4v2.5",
+      "M9.5 21h5",
+    ],
+    fishing_rod: [
+      "M4 21 18 4",
+      "M18 4c-3.5 5.5 2 7.5-1.5 12.5",
+      "M16.5 16.5c-1.5 1.8-1 3.2.8 3.2 1.5 0 2-1.4 1-2.4",
+      "M8 13.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 1 0-3 0",
+    ],
+  };
+
+  function enchantIcon(type) {
+    const svg = document.createElementNS(SVGNS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    for (const d of ENCHANT_ICONS[type] || []) {
+      const path = document.createElementNS(SVGNS, "path");
+      path.setAttribute("d", d);
+      svg.appendChild(path);
+    }
+    return svg;
+  }
+
+  function buildEnchantItems() {
+    for (const [id, item] of Object.entries(ENCH.ITEMS)) {
+      const button = el("button", "enchant-item");
+      button.type = "button";
+      button.setAttribute("data-item", id);
+      button.setAttribute("aria-pressed", "false");
+      button.title = item.label;
+      button.appendChild(enchantIcon(id));
+      const label = el("span");
+      label.textContent = item.label;
+      button.appendChild(label);
+      button.addEventListener("click", () => {
+        if (state.enchantItem === id) return;
+        state.enchantItem = id;
+        const materials = ENCH.itemMaterials(id);
+        if (materials.length && !materials.some((m) => m.id === state.enchantMaterial)) {
+          state.enchantMaterial = materials[0].id;
+        }
+        rebuildEnchantMaterials();
+        updateEnchantUI();
+      });
+      enchantItemsEl.appendChild(button);
+    }
+  }
+
+  function rebuildEnchantMaterials() {
+    enchantMaterialsEl.textContent = "";
+    const materials = ENCH.itemMaterials(state.enchantItem);
+    enchantMaterialsEl.hidden = materials.length === 0;
+    for (const material of materials) {
+      const button = el("button", "enchant-material");
+      button.type = "button";
+      button.setAttribute("data-material", material.id);
+      button.setAttribute("aria-pressed", state.enchantMaterial === material.id ? "true" : "false");
+      button.classList.toggle("is-on", state.enchantMaterial === material.id);
+      const dot = el("i");
+      dot.style.setProperty("--mat", material.color);
+      button.appendChild(dot);
+      const label = el("span");
+      label.textContent = material.label;
+      button.appendChild(label);
+      button.addEventListener("click", () => {
+        if (state.enchantMaterial === material.id) return;
+        state.enchantMaterial = material.id;
+        for (const node of enchantMaterialsEl.children) {
+          const on = node.getAttribute("data-material") === material.id;
+          node.classList.toggle("is-on", on);
+          node.setAttribute("aria-pressed", on ? "true" : "false");
+        }
+        updateEnchantUI();
+      });
+      enchantMaterialsEl.appendChild(button);
+    }
+  }
+
+  function buildEnchantShelves() {
+    for (let i = 0; i < 15; i++) enchantShelvesEl.appendChild(el("i"));
+  }
+
+  function buildEnchantOffers() {
+    for (let slot = 0; slot < 3; slot++) {
+      const button = el("button", "enchant-offer");
+      button.type = "button";
+      button.setAttribute("data-slot", String(slot));
+      button.setAttribute("aria-pressed", "false");
+      const top = el("span", "enchant-offer-top");
+      const name = el("span", "enchant-offer-slot");
+      name.textContent = ENCH.SLOT_NAMES[slot];
+      const lapis = el("span", "enchant-offer-lapis");
+      lapis.textContent = "◆ " + ENCH.SLOT_COSTS[slot];
+      top.appendChild(name);
+      top.appendChild(lapis);
+      const level = el("span", "enchant-offer-level");
+      const foot = el("span", "enchant-offer-foot");
+      foot.textContent = ENCH.SLOT_COSTS[slot] + " lapis · spends " + ENCH.SLOT_COSTS[slot] + (slot ? " levels" : " level");
+      button.appendChild(top);
+      button.appendChild(level);
+      button.appendChild(foot);
+      button.addEventListener("click", () => {
+        state.enchantSlot = slot;
+        updateEnchantUI();
+      });
+      enchantOffersEl.appendChild(button);
+    }
+  }
+
+  function roman(n) {
+    return ["I", "II", "III", "IV", "V"][n - 1] || String(n);
+  }
+
+  function updateEnchantUI() {
+    if (!state.enchantOpen || !ENCH) return;
+    const item = ENCH.ITEMS[state.enchantItem];
+    const materials = ENCH.itemMaterials(state.enchantItem);
+    const material = materials.find((m) => m.id === state.enchantMaterial) || materials[0] || null;
+    if (material && state.enchantMaterial !== material.id) state.enchantMaterial = material.id;
+    const enchantability = ENCH.enchantability(state.enchantItem, material ? material.id : "");
+    const shelves = state.enchantShelves;
+
+    for (const node of enchantItemsEl.children) {
+      const on = node.getAttribute("data-item") === state.enchantItem;
+      node.classList.toggle("is-on", on);
+      node.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    for (const node of enchantMaterialsEl.children) {
+      const on = node.getAttribute("data-material") === state.enchantMaterial;
+      node.classList.toggle("is-on", on);
+      node.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+
+    enchantGearMetaEl.textContent = (material ? material.label + " " : "") + item.label.toLowerCase() +
+      " · enchantability " + enchantability;
+    enchantShelfCountEl.textContent = String(shelves);
+    enchantShelfInput.value = String(shelves);
+    enchantShelfInput.style.setProperty("--fill", (shelves / 15 * 100).toFixed(2) + "%");
+    for (let i = 0; i < enchantShelvesEl.children.length; i++) {
+      enchantShelvesEl.children[i].classList.toggle("on", i < shelves);
+    }
+    if (shelves >= 15) {
+      enchantShelfHint.textContent = "At the cap — the bottom offer is always level 30.";
+    } else if (shelves === 0) {
+      enchantShelfHint.textContent = "No shelves — the table tops out at level 8.";
+    } else {
+      const need = 15 - shelves;
+      enchantShelfHint.textContent = need + (need === 1 ? " more shelf" : " more shelves") +
+        " to guarantee a level 30 bottom offer.";
+    }
+
+    const offers = ENCH.offers(shelves);
+    for (const node of enchantOffersEl.children) {
+      const slot = Number(node.getAttribute("data-slot"));
+      const offer = offers[slot];
+      const level = node.querySelector(".enchant-offer-level");
+      level.textContent = formatInt(offer.min) + (offer.min === offer.max ? "" : "–" + formatInt(offer.max));
+      const on = slot === state.enchantSlot;
+      node.classList.toggle("is-on", on);
+      node.setAttribute("aria-pressed", on ? "true" : "false");
+      node.setAttribute("aria-label", offer.name + " offer, level " +
+        (offer.min === offer.max ? formatInt(offer.min) : formatInt(offer.min) + " to " + formatInt(offer.max)) +
+        ", costs " + offer.lapis + " lapis and " + offer.levelsSpent +
+        (offer.levelsSpent === 1 ? " level" : " levels"));
+    }
+
+    const selected = offers[state.enchantSlot];
+    enchantOddsTitleEl.textContent = selected.name + " offer";
+    enchantOddsLevelEl.textContent = selected.min === selected.max
+      ? "level " + formatInt(selected.min)
+      : "levels " + formatInt(selected.min) + "–" + formatInt(selected.max);
+
+    const rows = ENCH.odds(state.enchantItem, material ? material.id : "", shelves, state.enchantSlot);
+    enchantOddsEl.textContent = "";
+    if (!rows.length) {
+      const empty = el("div", "enchant-empty");
+      empty.setAttribute("role", "listitem");
+      empty.textContent = "No table enchantment can land on this roll. Raise the shelves or choose a different offer.";
+      enchantOddsEl.appendChild(empty);
+      return;
+    }
+    for (const row of rows) {
+      const line = el("div", "enchant-odd");
+      line.setAttribute("role", "listitem");
+      const pctText = row.chance < 0.01 ? "under 1 percent" : Math.round(row.chance * 100) + " percent";
+      line.setAttribute("aria-label", row.label + ", maximum tier " + roman(row.maxLevel) +
+        ", " + pctText + " chance to appear");
+      const name = el("span", "enchant-odd-name");
+      name.textContent = row.label;
+      const tier = el("span", "enchant-odd-tier");
+      tier.textContent = roman(row.maxLevel);
+      tier.title = "Maximum tier on this item";
+      const bar = el("span", "enchant-odd-bar");
+      const fill = el("i");
+      fill.style.width = Math.max(2, Math.round(row.chance * 100)) + "%";
+      bar.appendChild(fill);
+      const pct = el("span", "enchant-odd-pct");
+      pct.textContent = row.chance < 0.01 ? "<1%" : Math.round(row.chance * 100) + "%";
+      line.appendChild(name);
+      line.appendChild(tier);
+      line.appendChild(bar);
+      line.appendChild(pct);
+      enchantOddsEl.appendChild(line);
+    }
+  }
+
+  function queueEnchantUI() {
+    if (!state.enchantOpen || state.enchantRaf) return;
+    state.enchantRaf = requestAnimationFrame(() => {
+      state.enchantRaf = 0;
+      updateEnchantUI();
+    });
+  }
+
+  function openEnchant() {
+    if (state.enchantOpen || state.mapShown) return;
+    state.enchantOpen = true;
+    clearTimeout(state.enchantTimer);
+    seedInput.blur();
+    homeEl.classList.add("is-out");
+    homeEl.setAttribute("aria-hidden", "true");
+    homeEl.setAttribute("inert", "");
+    state.enchantTimer = setTimeout(() => {
+      if (state.enchantOpen) homeEl.hidden = true;
+    }, 320);
+    enchantEl.hidden = false;
+    enchantEl.scrollTop = 0;
+    rootEl.classList.add("enchant-mode");
+    document.title = "Enchanting table — seedmap";
+    updateEnchantUI();
+    requestAnimationFrame(() => enchantEl.focus({ preventScroll: true }));
+  }
+
+  function closeEnchant() {
+    if (!state.enchantOpen) return;
+    state.enchantOpen = false;
+    clearTimeout(state.enchantTimer);
+    if (state.enchantRaf) {
+      cancelAnimationFrame(state.enchantRaf);
+      state.enchantRaf = 0;
+    }
+    enchantEl.hidden = true;
+    homeEl.hidden = false;
+    homeEl.classList.remove("is-out");
+    homeEl.removeAttribute("aria-hidden");
+    homeEl.removeAttribute("inert");
+    rootEl.classList.remove("enchant-mode");
+    document.title = "Seedmap — offline Minecraft seed atlas";
+    requestAnimationFrame(() => enchantBtn.focus());
   }
 
   /* ------------------------------------------------------------ home flow */
@@ -5200,8 +6876,26 @@ globalThis.BIOME_TREE = {
     measureTotalEl = document.getElementById("measureTotal");
     measureTimeEl = document.getElementById("measureTime");
     measureRouteEl = document.getElementById("measureRoute");
+    enchantEl = document.getElementById("enchant");
+    enchantBtn = document.getElementById("enchantBtn");
+    enchantBack = document.getElementById("enchantBack");
+    enchantItemsEl = document.getElementById("enchantItems");
+    enchantMaterialsEl = document.getElementById("enchantMaterials");
+    enchantGearMetaEl = document.getElementById("enchantGearMeta");
+    enchantShelfInput = document.getElementById("enchantShelfInput");
+    enchantShelfCountEl = document.getElementById("enchantShelfCount");
+    enchantShelfHint = document.getElementById("enchantShelfHint");
+    enchantShelvesEl = document.getElementById("enchantShelves");
+    enchantOffersEl = document.getElementById("enchantOffers");
+    enchantOddsEl = document.getElementById("enchantOdds");
+    enchantOddsTitleEl = document.getElementById("enchantOddsTitle");
+    enchantOddsLevelEl = document.getElementById("enchantOddsLevel");
 
     buildKey();
+    buildEnchantItems();
+    buildEnchantShelves();
+    buildEnchantOffers();
+    rebuildEnchantMaterials();
     drawHomeHorizon();
     updateMeasureUI();
     resize();
@@ -5225,6 +6919,13 @@ globalThis.BIOME_TREE = {
     dioramaBtn.addEventListener("click", () => setMode("diorama"));
     measureBtn.addEventListener("click", () => setMeasureActive(!state.measure.active));
     measureClear.addEventListener("click", clearMeasure);
+
+    enchantBtn.addEventListener("click", openEnchant);
+    enchantBack.addEventListener("click", closeEnchant);
+    enchantShelfInput.addEventListener("input", () => {
+      state.enchantShelves = clamp(Math.round(Number(enchantShelfInput.value) || 0), 0, 15);
+      queueEnchantUI();
+    });
 
     seedForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -5263,6 +6964,23 @@ globalThis.BIOME_TREE = {
       get mode() { return state.mode; },
       get points() { return state.measure.points.map((p) => ({ x: p.x, z: p.z })); },
       get distance() { return measureStats().total; },
+      get measureActive() { return state.measure.active; },
+      get enchantOpen() { return state.enchantOpen; },
+      get enchant() {
+        if (!ENCH) return null;
+        const material = ENCH.itemMaterials(state.enchantItem)
+          .find((m) => m.id === state.enchantMaterial);
+        return {
+          item: state.enchantItem,
+          material: material ? material.id : "",
+          shelves: state.enchantShelves,
+          slot: state.enchantSlot,
+          offers: ENCH.offers(state.enchantShelves),
+          odds: ENCH.odds(state.enchantItem, material ? material.id : "", state.enchantShelves, state.enchantSlot),
+        };
+      },
+      openEnchant,
+      closeEnchant,
       get diorama() {
         const g = diorama.grid;
         return g ? {
@@ -5282,7 +7000,9 @@ globalThis.BIOME_TREE = {
     };
 
     if (window.matchMedia && window.matchMedia("(pointer: fine)").matches) {
-      setTimeout(() => seedInput.focus(), 250);
+      setTimeout(() => {
+        if (!state.enchantOpen && !state.mapShown) seedInput.focus();
+      }, 250);
     }
     requestAnimationFrame(frame);
   }

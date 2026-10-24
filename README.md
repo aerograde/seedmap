@@ -5,13 +5,13 @@ self-contained SVG: markup, CSS, JavaScript and the generator are inline, and it
 network requests.
 
 Seedmap draws the surface biomes, structures and strongholds of a Minecraft Java seed, then
-lets you tilt that map into a **Diorama**, measure a route between points, and read the
-distance and an estimated travel time. It works from `file://`, with no build step or server.
-Source: [aerograde/seedmap](https://github.com/aerograde/seedmap).
+lets you tilt that map into a **Diorama**, measure a route between points, read the distance
+and an estimated travel time, or open the **Enchanting table** calculator. It works from
+`file://`, with no build step or server. Source: [aerograde/seedmap](https://github.com/aerograde/seedmap).
 
-The chrome is a cartographer's field guide rather than a generic dark dashboard: parchment
-panels, beveled orange controls, monospace labels, a generated pixel horizon on the seed
-card, and a 16×16 pixel-art icon for every structure type.
+The chrome is a cartographer's field guide after dark: smoked-glass panels, warm cream type,
+muted brass controls, monospace labels, a generated pixel horizon on the seed card, and a
+16×16 pixel-art icon for every structure type.
 
 | Home | Map |
 | --- | --- |
@@ -20,6 +20,10 @@ card, and a 16×16 pixel-art icon for every structure type.
 | Diorama | Measure |
 | --- | --- |
 | ![Angled diorama](screenshots/diorama-desktop.png) | ![Measured route](screenshots/measure-desktop.png) |
+
+| Enchanting table | Enchanting table, phone |
+| --- | --- |
+| ![Enchanting table calculator](screenshots/enchant-desktop.png) | ![Enchanting table calculator on a phone](screenshots/enchant-mobile.png) |
 
 | Mobile key | Mobile diorama |
 | --- | --- |
@@ -38,12 +42,42 @@ card, and a 16×16 pixel-art icon for every structure type.
    the map shows each leg, the total route and an estimated walking/sprinting time.
 4. Hover a structure marker to see its name and block coordinates.
 5. Press **Esc** to leave measuring, or again to return to the seed box.
+6. Open **Enchanting table** from the quiet button in the home screen's bottom-right corner.
+   Choose gear and material, set the bookshelves, and compare the three offers. **Esc** or the
+   back button returns to the seed box.
 
-The map page has only its map tools. The home seed form is made inert and its input disabled
-while the map is open, so Tab and Enter cannot reach or resubmit the hidden form.
+The map page has only its map tools. The home screen is made inert while the map or
+enchanting table is open (and its input is also disabled while the map is open), so Tab and
+Enter cannot reach or resubmit the hidden form.
 
 Keyboard: `M` toggles measuring, `D` toggles Diorama, `+`/`-` zoom, the arrow keys pan,
 `Backspace` removes the last measurement point, and `Esc` steps back.
+
+## Enchanting table
+
+The calculator is a separate view inside the same SVG. It is reached from the discreet
+**Enchanting table** button at the bottom-right of the seed screen, and returns there with
+**Esc** or the back button. The map is not loaded or changed by it.
+
+- **Gear and material:** sword, pickaxe, axe, shovel, helmet, chestplate, leggings, boots,
+  bow, crossbow, trident and fishing rod. Tools and armour use their real material
+  enchantability (wood 15, stone 5, iron 14/9, gold 22/25, diamond 10, netherite 15,
+  leather 15, chain 12). Ranged gear, tridents and rods use enchantability 1.
+- **Bookshelves:** 0–15. The offers use the vanilla Java base roll
+  `randomInt(1,8) + floor(b/2) + randomInt(0,b)`, then the three slot transforms: top
+  `max(floor(base/3), 1)`, middle `floor(base*2/3) + 1`, bottom `max(base, b*2)`. At 15
+  shelves the bottom offer is always level 30; the top is 2–10 and the middle 6–21.
+- **Offers:** each card shows its possible required levels, the 1/2/3 lapis cost and the
+  1/2/3 levels actually spent. The displayed level is a requirement, not the price. This
+  is the distinction that makes a level-30 slot cost three levels rather than thirty.
+- **Odds:** the selected slot lists every enchantment it can produce, its maximum tier and
+  the chance it appears somewhere in a roll. The model uses the real enchantability
+  modifiers, weighted tier selection, conflict removal and the repeating
+  `(modified level + 1) / 50` bonus-roll chance. It is exact for a random table roll and
+  treasure enchantments are correctly absent. The table's offers come from a separate
+  player enchantment seed, not the world seed, so the calculator reports odds rather than
+  pretending to know one roll. The caveat is stated in the panel.
+- **No network:** the whole model, including the odds, runs locally in `src/enchant.js`.
 
 ## What it shows
 
@@ -186,9 +220,10 @@ Generation runs incrementally (a fast 4× preview pass, then detailed rows, plus
 structure queue and 2 ms dense-structure slices), so the page stays responsive while a new
 area is drawn. Diorama rows are generated in 5.5 ms slices. The 128 stronghold searches are
 streamed in 12 ms slices after the map opens, so the first frame is not blocked by their
-biome scans. Verified in Chromium at `file://` at 1440×900 and 390×844 (map at full zoom-out, the
-labelled grid at overview and 2 px/block, measure, diorama, marker hover, and both icon
-sheets) with no console errors; screenshots live in [screenshots](screenshots).
+biome scans. Verified in Chromium at `file://` at 1440×900 and 390×844 (map at full
+zoom-out, the labelled grid at overview and 2 px/block, measure, diorama, marker hover,
+both icon sheets, and the enchanting calculator at desktop and phone widths) with no
+console errors; screenshots live in [screenshots](screenshots).
 
 ## Rebuilding
 
@@ -196,16 +231,18 @@ sheets) with no console errors; screenshots live in [screenshots](screenshots).
 python3 tools/build.py
 ```
 
-`src/engine.js` + `src/data.js` + `src/app.js` + `src/style.css` + `src/template.svg` are
-inlined into `seedmap.svg`. `tools/test_engine.js` compares the JS engine with the committed
-block-space cubiomes dumps in `tools/reference/`; it does not use noise-space probes as
-evidence:
+`src/engine.js` + `src/enchant.js` + `src/data.js` + `src/app.js` + `src/style.css` +
+`src/template.svg` are inlined into `seedmap.svg`. `tools/test_engine.js` compares the JS
+engine with the committed block-space cubiomes dumps in `tools/reference/`; it does not use
+noise-space probes as evidence. `tools/test_enchant.js` checks the table offer ranges,
+treasure exclusions, item pools and probability bounds:
 
 ```
 node tools/test_engine.js                 # block-space biomes, seed 0
 node tools/test_engine.js --structures    # all 16 non-stronghold types and centers
 node tools/test_engine.js --dense         # treasure/mineshaft chunk parity
 node tools/test_engine.js --strongholds   # all 128 relocated strongholds, seed 0
+node tools/test_enchant.js                # enchanting offer ranges and odds
 ```
 
 ## Credits
