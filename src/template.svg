@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="root" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="100%" height="100%" role="application" aria-label="Offline Minecraft seed map">
+  <title>Seedmap — offline Minecraft seed atlas</title>
+  <desc>Enter a Minecraft Java 1.21.4 (Winter Drop) seed to explore its biomes and structures, tilt the map into a diorama, and measure a route. Runs entirely offline in this single SVG file.</desc>
+
+  <style><![CDATA[
+/*__CSS__*/
+  ]]></style>
+
+  <foreignObject x="0" y="0" width="100%" height="100%" style="overflow:hidden">
+    <div xmlns="http://www.w3.org/1999/xhtml" class="map-host">
+      <canvas id="mapCanvas" aria-label="Generated seed map. Drag to pan, scroll to zoom, and press M to measure."></canvas>
+    </div>
+  </foreignObject>
+
+  <foreignObject x="0" y="0" width="100%" height="100%" style="overflow:hidden" pointer-events="none">
+    <div xmlns="http://www.w3.org/1999/xhtml" class="ui" id="ui">
+
+      <section class="home" id="home">
+        <div class="home-top">
+          <span class="brand">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <rect x="1" y="1" width="6" height="6"/>
+              <rect x="9" y="1" width="6" height="6" class="hot"/>
+              <rect x="1" y="9" width="6" height="6"/>
+              <rect x="9" y="9" width="6" height="6"/>
+            </svg>
+            Seedmap
+          </span>
+          <span class="tag"><i class="tag-dot" aria-hidden="true"></i>Java Edition · 1.21.4 Winter Drop</span>
+        </div>
+
+        <div class="home-center">
+          <div class="seed-card">
+            <canvas class="horizon" id="homeHorizon" width="280" height="40" aria-hidden="true"></canvas>
+            <form class="seed-form" id="seedForm" autocomplete="off">
+              <div class="seed-card-head">
+                <label class="seed-label" for="seedInput">World seed</label>
+                <span class="edition">number or word</span>
+              </div>
+              <div class="seed-line">
+                <input id="seedInput" name="seed" type="text" inputmode="text" maxlength="120"
+                       placeholder="type a seed" spellcheck="false" autocapitalize="off"
+                       autocorrect="off" aria-label="Minecraft seed"/>
+              </div>
+              <button class="go" type="submit">
+                <span>Show the map</span>
+                <span class="go-key" aria-hidden="true">↵</span>
+              </button>
+              <p class="seed-help">Biomes, structures, strongholds<span class="dot">·</span>try <b>42</b><span class="dot">·</span>one file, offline</p>
+            </form>
+          </div>
+        </div>
+
+        <div class="home-bottom">
+          <span>Surface generation · every seed is its own world</span>
+          <span>Single file · fully offline</span>
+        </div>
+      </section>
+
+      <section class="map-ui" id="mapUi" hidden="hidden">
+        <div class="vignette"></div>
+
+        <div class="hud hud-seed">
+          <span class="hud-label">Seed</span>
+          <span class="seed-out" id="seedOut">0</span>
+          <span class="loadbar" id="loadBar"><i id="loadBarFill"></i></span>
+        </div>
+
+        <div class="hud hud-readout">
+          <span class="coords" id="coords">0, 0</span>
+          <span class="biome-line" id="biomeLine"><span id="biomeName">—</span><span class="sep" id="bioSep" hidden="hidden">·</span><span class="structure" id="bioStruct" hidden="hidden"></span></span>
+        </div>
+
+        <div class="tools" id="tools" role="group" aria-label="Map tools">
+          <div class="seg" role="group" aria-label="View">
+            <button class="tool is-on" id="mapBtn" type="button" aria-pressed="true" title="Top-down map">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.4 4.1 6 2.7l4 1.4 3.6-1.4v9.2L10 13.3l-4-1.4-3.6 1.4z"/><path d="M6 2.7v9.2M10 4.1v9.2"/></svg>
+              <span>Map</span>
+            </button>
+            <button class="tool" id="dioramaBtn" type="button" aria-pressed="false" title="Angled 3D diorama; elevation is illustrative">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.9 14 5.2v5.6L8 14.1 2 10.8V5.2z"/><path d="M2 5.2 8 8.5l6-3.3M8 8.5v5.6"/></svg>
+              <span>Diorama</span>
+            </button>
+          </div>
+          <span class="tool-divider" aria-hidden="true"></span>
+          <button class="tool" id="measureBtn" type="button" aria-pressed="false" title="Measure a route">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.6 10.7 10.7 2.6l2.7 2.7-8.1 8.1z"/><path d="M4.7 9.3l1.1 1.1M6.8 7.2l1.1 1.1M8.9 5.1l1.1 1.1"/></svg>
+            <span>Measure</span>
+          </button>
+        </div>
+
+        <aside class="measure" id="measurePanel" hidden="hidden" aria-live="polite">
+          <div class="measure-head">
+            <span class="measure-kicker">Route</span>
+            <span class="measure-count" id="measureCount">0 points</span>
+            <button class="measure-clear" id="measureClear" type="button" hidden="hidden">Clear</button>
+          </div>
+          <div class="measure-total"><span id="measureTotal">—</span><span class="measure-unit">blocks</span></div>
+          <div class="measure-time" id="measureTime">Click the map to place a point</div>
+          <div class="measure-route" id="measureRoute"></div>
+        </aside>
+
+        <aside class="key" id="key" aria-label="Map key">
+          <div class="key-head">
+            <span class="t">Key</span>
+            <span class="s">Java 1.21.4</span>
+          </div>
+          <div class="key-grid" id="keyGrid"></div>
+          <div class="key-rule"></div>
+          <div class="key-sub">Biome colours</div>
+          <div class="biome-grid" id="biomeGrid"></div>
+          <div class="key-note">Underground markers are placements, not entrances.<br/>Diorama elevation is illustrative, not block-exact terrain.</div>
+        </aside>
+
+        <div class="scale">
+          <div class="scale-num" id="scaleNum">500 blocks</div>
+          <div class="scale-bar" id="scaleBar" style="width:100px"></div>
+        </div>
+
+        <div class="hint" id="hint">Drag to pan · scroll to zoom · M to measure · D for diorama · esc for a new seed</div>
+      </section>
+
+    </div>
+  </foreignObject>
+
+  <script><![CDATA[
+/*__APP__*/
+  ]]></script>
+</svg>
