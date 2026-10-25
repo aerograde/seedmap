@@ -7,12 +7,23 @@ SRC = ROOT / "src"
 
 template = (SRC / "template.svg").read_text()
 css = (SRC / "style.css").read_text()
-js = "\n".join([
-    (SRC / "data.js").read_text(),
-    (SRC / "engine.js").read_text(),
-    (SRC / "enchant.js").read_text(),
-    (SRC / "app.js").read_text(),
-])
+js = "\n".join(
+    (SRC / name).read_text()
+    for name in (
+        "util.js",
+        "biomes.js",
+        "data.js",
+        "engine.js",
+        "enchant.js",
+        "icons.js",
+        "terrain.js",
+        "grid.js",
+        "measure.js",
+        "map.js",
+        "calc.js",
+        "app.js",
+    )
+)
 
 for name, text in (("CSS", css), ("JS", js)):
     if "]]>" in text:

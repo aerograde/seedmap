@@ -12,8 +12,6 @@
 (function () {
   "use strict";
 
-  const M64 = (1n << 64n) - 1n;
-  const M48 = (1n << 48n) - 1n;
   const KLCG = 0x5deece66dn;
 
   // ------------------------------------------------------------------ RNG
@@ -550,21 +548,6 @@
      */
     biomeAtBlock(x, z) {
       return blockBiome(this, x, z);
-    }
-
-    /**
-     * Approximate terrain surface for a block column, from the same density
-     * sample used by the biome lookup. The density at y = 79 (block 316) is
-     * extrapolated to its zero crossing: blockY = 316 + 128 * density.
-     * Water is flattened to sea level by the UI. This is a heightfield hint
-     * for the diorama, not a full terrain generator.
-     */
-    surfaceAtBlock(x, z) {
-      const r = sampleNoise(
-        this, Math.floor(x / 4), Math.floor(z / 4), Infinity, 79
-      );
-      const h = 316 + 128 * (r.np[4] / 10000);
-      return { biome: r.biome, height: Math.max(4, Math.min(200, h)) };
     }
 
     /**
